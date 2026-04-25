@@ -34,6 +34,7 @@
                   class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all"
                 />
               </div>
+
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// body *</label>
                 <textarea
@@ -43,6 +44,42 @@
                   required
                   class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none leading-relaxed"
                 ></textarea>
+              </div>
+
+              <!-- Теги -->
+              <div>
+                <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">(необязательно)</span></label>
+                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-4 py-3 transition-all">
+                  <!-- Выбранные теги -->
+                  <div class="flex flex-wrap gap-1.5 mb-2" v-if="form.tags.length">
+                    <span
+                      v-for="(tag, i) in form.tags"
+                      :key="i"
+                      class="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/25 rounded text-emerald-400 font-mono text-xs"
+                    >
+                      #{{ tag }}
+                      <button type="button" @click="removeTag(i)" class="text-emerald-500/60 hover:text-red-400 leading-none ml-0.5 transition-colors">×</button>
+                    </span>
+                  </div>
+                  <input
+                    v-model="tagInput"
+                    type="text"
+                    placeholder="javascript, vue, python... (Enter чтобы добавить)"
+                    class="w-full bg-transparent text-white font-mono text-sm placeholder-slate-600 outline-none"
+                    @keydown="onTagKeydown"
+                  />
+                </div>
+                <div class="flex flex-wrap gap-1.5 mt-2">
+                  <button
+                    v-for="suggested in suggestedTags.filter(t => !form.tags.includes(t))"
+                    :key="suggested"
+                    type="button"
+                    @click="form.tags.push(suggested)"
+                    class="px-2 py-0.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/30 hover:text-emerald-400 rounded text-slate-500 font-mono text-xs transition-all"
+                  >
+                    +#{{ suggested }}
+                  </button>
+                </div>
               </div>
 
               <div v-if="errorMsg" class="px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-sm">
@@ -83,27 +120,58 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue', 'submitted'])
 
 const isEdit = computed(() => !!props.editPost)
-const form = reactive({ title: '', body: '' })
+const form = reactive({ title: '', body: '', tags: [] })
+const tagInput = ref('')
 const loading = ref(false)
 const errorMsg = ref('')
 const { forumAPI } = useApi()
+
+const suggestedTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'typescript', 'backend', 'frontend', 'css', 'api', 'sql', 'devops']
+
+const addTag = () => {
+  const val = tagInput.value.trim().toLowerCase().replace(/^#/, '').replace(/[^a-zа-яё0-9-_]/gi, '')
+  if (val && !form.tags.includes(val) && form.tags.length < 5) {
+    form.tags.push(val)
+  }
+  tagInput.value = ''
+}
+
+const removeTag = (i) => {
+  form.tags.splice(i, 1)
+}
+
+const onTagKeydown = (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    addTag()
+  } else if (e.key === ',' || e.key === ' ') {
+    e.preventDefault()
+    addTag()
+  } else if (e.key === 'Backspace' && !tagInput.value && form.tags.length) {
+    form.tags.pop()
+  }
+}
 
 watch(() => props.editPost, (val) => {
   if (val) {
     form.title = val.title
     form.body = val.body
+    form.tags = val.tags ? [...val.tags] : []
   } else {
     form.title = ''
     form.body = ''
+    form.tags = []
   }
 }, { immediate: true })
 
 watch(() => props.modelValue, (val) => {
   if (!val) {
     errorMsg.value = ''
+    tagInput.value = ''
     if (!props.editPost) {
       form.title = ''
       form.body = ''
+      form.tags = []
     }
   }
 })
@@ -113,10 +181,11 @@ const handleSubmit = async () => {
   errorMsg.value = ''
   try {
     let result
+    const payload = { title: form.title, body: form.body, tags: form.tags }
     if (isEdit.value) {
-      result = await forumAPI.updatePost(props.editPost.id, { title: form.title, body: form.body })
+      result = await forumAPI.updatePost(props.editPost.id, payload)
     } else {
-      result = await forumAPI.createPost({ title: form.title, body: form.body })
+      result = await forumAPI.createPost(payload)
     }
     emit('submitted', result)
     emit('update:modelValue', false)

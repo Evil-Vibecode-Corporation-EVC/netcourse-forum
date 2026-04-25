@@ -63,12 +63,11 @@ export const useApi = () => {
     } catch (error: any) {
       let userMessage = error.message
 
-      // Пользовательские сообщения для типовых ошибок
-      if (error.message.includes('Failed to fetch') || 
+      if (error.message.includes('Failed to fetch') ||
           error.message.includes('NetworkError') ||
           error.message.includes('Network Error')) {
         userMessage = 'Не удалось подключиться к серверу. Проверьте интернет-соединение.'
-      } 
+      }
       else if (error.message.includes('timeout')) {
         userMessage = 'Сервер не отвечает. Попробуйте позже.'
       }
@@ -85,11 +84,11 @@ export const useApi = () => {
     // Посты
     getPosts: (page = 1, limit = 20) => apiRequest(`/forum/posts?page=${page}&limit=${limit}`),
     getPost: (id: number) => apiRequest(`/forum/posts/${id}`),
-    createPost: (data: { title: string; body: string }) => apiRequest('/forum/posts', {
+    createPost: (data: { title: string; body: string; tags?: string[] }) => apiRequest('/forum/posts', {
       method: 'POST',
       body: data
     }),
-    updatePost: (id: number, data: { title?: string; body?: string }) => apiRequest(`/forum/posts/${id}`, {
+    updatePost: (id: number, data: { title?: string; body?: string; tags?: string[] }) => apiRequest(`/forum/posts/${id}`, {
       method: 'PUT',
       body: data
     }),
@@ -98,7 +97,7 @@ export const useApi = () => {
     }),
 
     // Ответы
-    getReplies: (postId: number, page = 1, limit = 20) => 
+    getReplies: (postId: number, page = 1, limit = 20) =>
       apiRequest(`/forum/posts/${postId}/replies?page=${page}&limit=${limit}`),
     createReply: (postId: number, body: string) => apiRequest(`/forum/posts/${postId}/replies`, {
       method: 'POST',
@@ -110,7 +109,23 @@ export const useApi = () => {
     }),
     deleteReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}`, {
       method: 'DELETE'
-    })
+    }),
+
+    // Лайки постов
+    likePost: (postId: number) => apiRequest(`/forum/posts/${postId}/likes`, { method: 'POST' }),
+    unlikePost: (postId: number) => apiRequest(`/forum/posts/${postId}/likes`, { method: 'DELETE' }),
+
+    // Лайки ответов
+    likeReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}/likes`, { method: 'POST' }),
+    unlikeReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}/likes`, { method: 'DELETE' }),
+  }
+
+  // ============ ПРОФИЛИ (публичные) ============
+  const profileAPI = {
+    // Получить публичный профиль по ID
+    getById: (userId: number) => apiRequest(`/profiles/${userId}`),
+    // Получить публичный профиль по username
+    getByUsername: (username: string) => apiRequest(`/profiles/u/${username}`),
   }
 
   // ============ АУТЕНТИФИКАЦИЯ ============
@@ -185,7 +200,7 @@ export const useApi = () => {
       return 'Ресурс уже существует или возник конфликт данных.'
     }
     if (message.includes('422') || message.includes('Validation')) {
-      return 'Некорректные данные. Проверьте введенную информацию.'
+      return 'Некорректные данные. Проверьте введённую информацию.'
     }
     if (message.includes('500') || message.includes('Server Error')) {
       return 'Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.'
@@ -202,7 +217,7 @@ export const useApi = () => {
 
       if (typeof value === 'string') {
         value = value.trim()
-        
+
         if (key === 'email' && !value.includes('@')) {
           throw new Error('Некорректный email адрес')
         }
@@ -219,6 +234,7 @@ export const useApi = () => {
   return {
     apiRequest,
     forumAPI,
+    profileAPI,
     authAPI,
     handleApiError,
     sanitizeData

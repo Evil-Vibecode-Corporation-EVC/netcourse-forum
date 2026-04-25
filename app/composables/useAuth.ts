@@ -14,7 +14,7 @@ export interface User {
 
 export const useAuth = () => {
   const router = useRouter()
-  const { authAPI, handleApiError, sanitizeData } = useApi()
+  const { authAPI, handleApiError, sanitizeData, apiRequest } = useApi() // добавили apiRequest
   
   const user = useState<User | null>('auth:user', () => null)
   const token = useState<string | null>('auth:token', () => null)
@@ -158,6 +158,37 @@ export const useAuth = () => {
     }
   }
 
+  // Метод для обновления данных пользователя с сервера
+  const refreshUser = async (): Promise<User | null> => {
+    if (!user.value?.id) {
+      // Попробуем из localStorage
+      if (process.client) {
+        const savedUser = localStorage.getItem('userData')
+        if (savedUser) {
+          try {
+            const parsed = JSON.parse(savedUser)
+            if (parsed.id) {
+              user.value = parsed
+            }
+          } catch(e) {}
+        }
+      }
+      if (!user.value?.id) return null
+    }
+    
+    try {
+      const response = await apiRequest(`/users/${user.value.id}`)
+      user.value = response
+      if (process.client) {
+        localStorage.setItem('userData', JSON.stringify(response))
+      }
+      return response
+    } catch (error) {
+      console.error('Failed to refresh user:', error)
+      return null
+    }
+  }
+
   const isAdmin = computed(() => {
     return user.value?.role === 'admin' || user.value?.role === 'administrator' || user.value?.role === 'ADMIN'
   })
@@ -175,6 +206,7 @@ export const useAuth = () => {
     logout,
     getCurrentUser,
     getToken,
-    updateUser
+    updateUser,
+    refreshUser 
   }
 }

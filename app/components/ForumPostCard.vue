@@ -7,12 +7,16 @@
     <div class="absolute top-0 right-0 w-6 h-6 border-t border-r border-emerald-500/30 group-hover:border-emerald-500/60 rounded-tr-xl transition-all"></div>
 
     <div class="flex items-start gap-3 mb-3">
-      <div class="w-9 h-9 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 mt-0.5">
-        <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-        <span v-else class="text-emerald-400 font-mono text-sm font-bold">
-          {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
-        </span>
-      </div>
+      <!-- Аватар с tooltip -->
+      <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
+        <div class="w-9 h-9 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer">
+          <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
+          <span v-else class="text-emerald-400 font-mono text-sm font-bold">
+            {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
+          </span>
+        </div>
+      </UserTooltip>
+
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap">
           <span class="text-emerald-400 font-mono text-sm font-semibold">{{ post.user?.username || 'anonymous' }}</span>
@@ -44,16 +48,46 @@
       {{ post.title }}
     </h3>
 
-    <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-4">
+    <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-3">
       {{ post.body }}
     </p>
+
+    <!-- Теги -->
+    <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
+      <span
+        v-for="tag in post.tags"
+        :key="tag"
+        class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-400 font-mono text-xs hover:bg-emerald-500/20 transition-all cursor-pointer"
+      >
+        #{{ tag }}
+      </span>
+    </div>
 
     <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
       <span class="flex items-center gap-1.5">
         <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         {{ post.replies?.length || 0 }} replies
       </span>
-      <span class="flex items-center gap-1.5">
+
+      <!-- Лайки -->
+      <button
+        class="flex items-center gap-1.5 transition-all group/like"
+        :class="localLiked ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"
+        @click.stop="toggleLike"
+        :disabled="!currentUser"
+        :title="currentUser ? (localLiked ? 'Убрать лайк' : 'Лайк') : 'Войдите чтобы лайкнуть'"
+      >
+        <svg
+          class="w-3.5 h-3.5 transition-transform group-hover/like:scale-110"
+          :class="localLiked ? 'fill-emerald-400' : 'fill-none'"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+        >
+          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+        </svg>
+        <span>{{ localLikes }}</span>
+      </button>
+
+      <span class="flex items-center gap-1.5 ml-auto">
         <span class="w-1.5 h-1.5 bg-emerald-500/60 rounded-full"></span>
         #{{ post.id }}
       </span>
@@ -63,23 +97,47 @@
 
 <script setup>
 const props = defineProps({
-  post: { 
-    type: Object, 
+  post: {
+    type: Object,
     required: true,
     default: () => ({})
   },
-  currentUser: { 
-    type: Object, 
-    default: null 
+  currentUser: {
+    type: Object,
+    default: null
   }
 })
 
 const emit = defineEmits(['click', 'edit', 'delete'])
 
+const localLiked = ref(props.post.likedByMe ?? false)
+const localLikes = ref(props.post.likesCount ?? 0)
+
+const { apiRequest } = useApi()
+
 const canEdit = computed(() => {
   if (!props.currentUser || !props.post) return false
   return props.currentUser.id === props.post.userId || props.currentUser.role === 'ADMIN'
 })
+
+const toggleLike = async () => {
+  if (!props.currentUser) return
+  const wasLiked = localLiked.value
+  // Оптимистичное обновление
+  localLiked.value = !wasLiked
+  localLikes.value += wasLiked ? -1 : 1
+  try {
+    if (wasLiked) {
+      await apiRequest(`/forum/posts/${props.post.id}/likes`, { method: 'DELETE' })
+    } else {
+      await apiRequest(`/forum/posts/${props.post.id}/likes`, { method: 'POST' })
+    }
+  } catch {
+    // откатываем при ошибке
+    localLiked.value = wasLiked
+    localLikes.value += wasLiked ? 1 : -1
+  }
+}
 
 const formatDate = (dateStr) => {
   if (!dateStr) return ''

@@ -38,11 +38,14 @@
             </div>
           </div>
 
+          <!-- Автор поста с tooltip -->
           <div class="flex items-center gap-3 mb-5">
-            <div class="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden">
-              <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-              <span v-else class="text-emerald-400 font-mono font-bold">{{ post.user?.username?.charAt(0).toUpperCase() }}</span>
-            </div>
+            <UserTooltip :user-id="post.user?.id || post.userId">
+              <div class="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden hover:border-emerald-500/60 transition-all cursor-pointer">
+                <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
+                <span v-else class="text-emerald-400 font-mono font-bold">{{ post.user?.username?.charAt(0).toUpperCase() }}</span>
+              </div>
+            </UserTooltip>
             <div>
               <div class="text-emerald-400 font-mono text-sm font-semibold">{{ post.user?.username }}</div>
               <div class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</div>
@@ -51,7 +54,47 @@
 
           <h1 class="text-2xl sm:text-3xl font-bold text-white mb-5 leading-snug">{{ post.title }}</h1>
 
-          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-sm bg-slate-800/50 border border-slate-700/50 rounded-xl p-5">{{ post.body }}</div>
+          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-sm bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-5">{{ post.body }}</div>
+
+          <!-- Теги поста -->
+          <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-5">
+            <NuxtLink
+              v-for="tag in post.tags"
+              :key="tag"
+              to="/"
+              class="px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-400 font-mono text-xs hover:bg-emerald-500/20 transition-all"
+            >
+              #{{ tag }}
+            </NuxtLink>
+          </div>
+
+          <!-- Лайки поста -->
+          <div class="flex items-center gap-4 border-t border-slate-800 pt-4">
+            <button
+              @click="togglePostLike"
+              :disabled="!isAuthenticated"
+              class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-mono text-sm"
+              :class="postLiked
+                ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
+                : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-400'"
+              :title="isAuthenticated ? (postLiked ? 'Убрать лайк' : 'Лайк') : 'Войдите'"
+            >
+              <svg
+                class="w-4 h-4 transition-transform hover:scale-110"
+                :class="postLiked ? 'fill-emerald-400' : 'fill-none'"
+                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+              >
+                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              </svg>
+              <span>{{ postLikesCount }}</span>
+              <span class="text-xs text-slate-500">{{ postLiked ? 'liked' : 'like' }}</span>
+            </button>
+
+            <span class="text-slate-600 font-mono text-xs">
+              <span class="w-1.5 h-1.5 bg-emerald-500/50 rounded-full inline-block mr-1.5"></span>
+              {{ replyMeta.total }} replies
+            </span>
+          </div>
         </article>
 
         <!-- Replies section -->
@@ -110,10 +153,14 @@
               class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition-all"
             >
               <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0">
-                  <img v-if="reply.user?.avatarUrl" :src="reply.user.avatarUrl" class="w-full h-full object-cover" />
-                  <span v-else class="text-slate-400 font-mono text-xs font-bold">{{ reply.user?.username?.charAt(0).toUpperCase() }}</span>
-                </div>
+                <!-- Аватар ответа с tooltip -->
+                <UserTooltip :user-id="reply.user?.id || reply.userId">
+                  <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 hover:border-emerald-500/40 transition-all cursor-pointer">
+                    <img v-if="reply.user?.avatarUrl" :src="reply.user.avatarUrl" class="w-full h-full object-cover" />
+                    <span v-else class="text-slate-400 font-mono text-xs font-bold">{{ reply.user?.username?.charAt(0).toUpperCase() }}</span>
+                  </div>
+                </UserTooltip>
+
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2 mb-2 flex-wrap">
                     <span class="text-emerald-400 font-mono text-sm font-semibold">{{ reply.user?.username }}</span>
@@ -123,6 +170,25 @@
 
                   <div v-if="editingReplyId !== reply.id">
                     <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap">{{ reply.body }}</p>
+                    <!-- Лайк ответа -->
+                    <div class="mt-3">
+                      <button
+                        @click="toggleReplyLike(reply)"
+                        :disabled="!isAuthenticated"
+                        class="flex items-center gap-1.5 font-mono text-xs transition-all"
+                        :class="reply.likedByMe ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"
+                        :title="isAuthenticated ? (reply.likedByMe ? 'Убрать лайк' : 'Лайк') : 'Войдите'"
+                      >
+                        <svg
+                          class="w-3.5 h-3.5 transition-transform hover:scale-110"
+                          :class="reply.likedByMe ? 'fill-emerald-400' : 'fill-none'"
+                          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                        >
+                          <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                        <span>{{ reply.likesCount ?? 0 }}</span>
+                      </button>
+                    </div>
                   </div>
                   <div v-else>
                     <textarea
@@ -184,7 +250,7 @@
 const route = useRoute()
 const router = useRouter()
 const { isAuthenticated, user, initialize } = useAuth()
-const { forumAPI, handleApiError } = useApi()
+const { forumAPI, apiRequest, handleApiError } = useApi()
 const { toasts, success, error: showError, remove: removeToast } = useToast()
 
 const postId = computed(() => Number(route.params.id))
@@ -206,6 +272,10 @@ const showEditModal = ref(false)
 const showDeletePostModal = ref(false)
 const showDeleteReplyModal = ref(false)
 const deleteReplyTarget = ref(null)
+
+// Лайки поста (локальное состояние)
+const postLiked = ref(false)
+const postLikesCount = ref(0)
 
 const canEditPost = computed(() => {
   if (!user.value || !post.value) return false
@@ -231,7 +301,10 @@ const formatDate = (dateStr) => {
 const loadPost = async () => {
   loading.value = true
   try {
-    post.value = await forumAPI.getPost(postId.value)
+    const data = await forumAPI.getPost(postId.value)
+    post.value = data
+    postLiked.value = data.likedByMe ?? false
+    postLikesCount.value = data.likesCount ?? 0
   } catch (e) {
     showError(handleApiError(e, 'Не удалось загрузить пост'))
   } finally {
@@ -249,6 +322,40 @@ const loadReplies = async (page = 1) => {
     showError(handleApiError(e, 'Не удалось загрузить ответы'))
   } finally {
     repliesLoading.value = false
+  }
+}
+
+const togglePostLike = async () => {
+  if (!isAuthenticated.value) return
+  const wasLiked = postLiked.value
+  postLiked.value = !wasLiked
+  postLikesCount.value += wasLiked ? -1 : 1
+  try {
+    if (wasLiked) {
+      await apiRequest(`/forum/posts/${postId.value}/likes`, { method: 'DELETE' })
+    } else {
+      await apiRequest(`/forum/posts/${postId.value}/likes`, { method: 'POST' })
+    }
+  } catch {
+    postLiked.value = wasLiked
+    postLikesCount.value += wasLiked ? 1 : -1
+  }
+}
+
+const toggleReplyLike = async (reply) => {
+  if (!isAuthenticated.value) return
+  const wasLiked = reply.likedByMe
+  reply.likedByMe = !wasLiked
+  reply.likesCount = (reply.likesCount ?? 0) + (wasLiked ? -1 : 1)
+  try {
+    if (wasLiked) {
+      await apiRequest(`/forum/posts/${postId.value}/replies/${reply.id}/likes`, { method: 'DELETE' })
+    } else {
+      await apiRequest(`/forum/posts/${postId.value}/replies/${reply.id}/likes`, { method: 'POST' })
+    }
+  } catch {
+    reply.likedByMe = wasLiked
+    reply.likesCount += wasLiked ? 1 : -1
   }
 }
 

@@ -25,7 +25,7 @@
 
       <div class="mt-8 pt-6 border-t border-slate-700 text-center">
         <p class="text-slate-500 text-xs font-mono">
-          © 2026 NetCourse/Forum <span class="text-emerald-500">// powered by EVC</span>
+          © 2026 NetCourse/Forum <span class="text-emerald-500">// powered by EVC </span>
         </p>
       </div>
     </div>

@@ -1,30 +1,28 @@
-<!-- pages/forum/[id].vue -->
 <template>
   <main class="min-h-screen bg-slate-950 pt-24 pb-20 px-4 sm:px-6">
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:40px_40px] opacity-30 pointer-events-none"></div>
 
     <div class="max-w-4xl mx-auto relative z-10">
-      <!-- Back -->
       <NuxtLink to="/" class="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-400 font-mono text-sm mb-8 transition-all group">
         <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         $ cd ~/forum
       </NuxtLink>
 
-      <!-- Loading -->
       <div v-if="loading" class="flex items-center justify-center py-24">
         <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
 
       <template v-else-if="post">
-        <!-- Post card -->
-        <article class="bg-slate-900 border border-emerald-500/25 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden">
-          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent"></div>
+        <article :class="['bg-slate-900 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden', isCoursePost ? 'border border-emerald-500/40 shadow-[0_0_18px_rgba(16,185,129,0.08)]' : 'border border-slate-700/30']">
+          <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-slate-500/20 to-transparent"></div>
 
           <div class="flex items-center gap-1.5 mb-6">
             <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
             <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
             <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-            <span class="text-slate-500 font-mono text-xs ml-2">post_#{{ post.id }}.md</span>
+            <span class="text-slate-500 font-mono text-xs ml-2">
+              post_#{{ post.id }}.md
+            </span>
 
             <div v-if="canEditPost" class="ml-auto flex items-center gap-2">
               <button @click="showEditModal = true" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 font-mono text-xs rounded-lg transition-all">
@@ -38,25 +36,81 @@
             </div>
           </div>
 
-          <!-- Автор поста с tooltip -->
-          <div class="flex items-center gap-3 mb-5">
+          <div class="flex items-start gap-3 mb-5">
             <UserTooltip :user-id="post.user?.id || post.userId">
-              <div class="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden hover:border-emerald-500/60 transition-all cursor-pointer">
+              <div class="w-10 h-10 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden hover:border-slate-500/60 transition-all cursor-pointer">
                 <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-                <span v-else class="text-emerald-400 font-mono font-bold">{{ post.user?.username?.charAt(0).toUpperCase() }}</span>
+                <span v-else class="text-slate-300 font-mono font-bold">{{ post.user?.username?.charAt(0).toUpperCase() }}</span>
               </div>
             </UserTooltip>
             <div>
-              <div class="text-emerald-400 font-mono text-sm font-semibold">{{ post.user?.username }}</div>
+              <div class="text-slate-300 font-mono text-sm font-semibold">{{ post.user?.username }}</div>
               <div class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</div>
+            </div>
+            <div v-if="isCoursePost && course" class="ml-auto text-right">
+              <div class="text-slate-500 font-mono text-[10px] uppercase tracking-[0.24em] mb-1">курс</div>
+              <NuxtLink :to="`/courses/${course.id}`" class="text-slate-200 text-sm font-semibold hover:text-white transition-colors block max-w-[220px] truncate">
+                {{ course.title }}
+              </NuxtLink>
             </div>
           </div>
 
           <h1 class="text-2xl sm:text-3xl font-bold text-white mb-5 leading-snug">{{ post.title }}</h1>
 
-          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-sm bg-slate-800/50 border border-slate-700/50 rounded-xl p-5 mb-5">{{ post.body }}</div>
+          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-sm rounded-xl p-5 mb-5 bg-slate-800/50 border border-slate-700/50">
+            {{ post.body }}
+          </div>
 
-          <!-- Теги поста -->
+          <div
+            v-if="post.courseId && course"
+            class="mb-8 p-6 rounded-2xl border border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm"
+          >
+            <div class="flex flex-col gap-5">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <NuxtLink
+                    :to="`/courses/${course.id}`"
+                    class="text-xl font-semibold text-white hover:text-emerald-300 transition-colors"
+                  >
+                    {{ course.title }}
+                  </NuxtLink>
+                  <div class="mt-2 text-slate-500 font-mono text-xs">
+                    {{ course.category || 'General' }} · {{ course.averageRating?.toFixed(1) || '0.0' }}/5 · {{ course.ratingsCount || 0 }} оценок
+                  </div>
+                </div>
+                <div class="flex items-center gap-3 flex-wrap text-slate-400 text-xs">
+                  <span v-if="courseCompleted" class="uppercase tracking-[0.16em]">завершён</span>
+                  <span v-else class="uppercase tracking-[0.16em]">не завершён</span>
+                  <span v-if="userRating !== null">Ваш отзыв: {{ userRating }} из 5</span>
+                  <span v-if="!isAuthenticated">Войдите, чтобы оценить курс.</span>
+                </div>
+              </div>
+
+              <p v-if="course.description" class="text-slate-400 text-sm leading-relaxed line-clamp-3">
+                {{ course.description }}
+              </p>
+
+              <div class="flex flex-col gap-3">
+                <div class="flex items-center gap-2 text-slate-200 font-mono text-sm">
+                  <span>Оценка автора:</span>
+                  <span class="flex items-center gap-0.5">
+                    <template v-for="n in 5" :key="n">
+                      <svg
+                        class="w-4 h-4"
+                        :class="n <= (userRating || 0) ? 'text-amber-400' : 'text-slate-600'"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    </template>
+                  </span>
+                  <span class="text-slate-500 text-xs">{{ userRating !== null ? `${userRating} / 5` : 'не оценено' }}</span>
+                </div>
+                <div v-if="userRating === null" class="text-slate-500 font-mono text-xs">Автор ещё не оставил оценку.</div>
+              </div>
+            </div>
+          </div>
           <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-5">
             <NuxtLink
               v-for="tag in post.tags"
@@ -68,7 +122,6 @@
             </NuxtLink>
           </div>
 
-          <!-- Лайки поста -->
           <div class="flex items-center gap-4 border-t border-slate-800 pt-4">
             <button
               @click="togglePostLike"
@@ -91,13 +144,12 @@
             </button>
 
             <span class="text-slate-600 font-mono text-xs">
-              <span class="w-1.5 h-1.5 bg-emerald-500/50 rounded-full inline-block mr-1.5"></span>
+              <span :class="['w-1.5 h-1.5 rounded-full inline-block mr-1.5', isCoursePost ? 'bg-emerald-500/50' : 'bg-emerald-500/50']"></span>
               {{ replyMeta.total }} replies
             </span>
           </div>
         </article>
 
-        <!-- Replies section -->
         <section>
           <div class="flex items-center gap-3 mb-6">
             <div class="flex gap-1">
@@ -109,7 +161,6 @@
             <span class="bg-slate-800 border border-slate-700 text-slate-400 font-mono text-xs px-2 py-0.5 rounded-lg">{{ replyMeta.total }}</span>
           </div>
 
-          <!-- Reply form -->
           <div v-if="isAuthenticated" class="bg-slate-900 border border-emerald-500/20 rounded-xl p-5 mb-6">
             <div class="flex items-center gap-1.5 mb-4">
               <div class="w-2 h-2 bg-red-500 rounded-full"></div>
@@ -141,7 +192,6 @@
             </span>
           </div>
 
-          <!-- Replies list -->
           <div v-if="repliesLoading" class="flex justify-center py-12">
             <div class="w-6 h-6 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
           </div>
@@ -153,7 +203,6 @@
               class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition-all"
             >
               <div class="flex items-start gap-3">
-                <!-- Аватар ответа с tooltip -->
                 <UserTooltip :user-id="reply.user?.id || reply.userId">
                   <div class="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center overflow-hidden shrink-0 hover:border-emerald-500/40 transition-all cursor-pointer">
                     <img v-if="reply.user?.avatarUrl" :src="reply.user.avatarUrl" class="w-full h-full object-cover" />
@@ -170,7 +219,6 @@
 
                   <div v-if="editingReplyId !== reply.id">
                     <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap">{{ reply.body }}</p>
-                    <!-- Лайк ответа -->
                     <div class="mt-3">
                       <button
                         @click="toggleReplyLike(reply)"
@@ -223,7 +271,6 @@
             </div>
           </div>
 
-          <!-- Reply pagination -->
           <div v-if="replyMeta.totalPages > 1" class="flex justify-center gap-2 mt-8">
             <button @click="loadReplies(replyMeta.page - 1)" :disabled="replyMeta.page === 1" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all disabled:opacity-40">← prev</button>
             <button @click="loadReplies(replyMeta.page + 1)" :disabled="replyMeta.page === replyMeta.totalPages" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all disabled:opacity-40">next →</button>
@@ -231,14 +278,12 @@
         </section>
       </template>
 
-      <!-- Not found -->
       <div v-else class="text-center py-24">
         <div class="text-slate-400 font-mono text-lg">// post not found</div>
         <NuxtLink to="/" class="mt-4 inline-block text-emerald-400 font-mono hover:underline">$ cd ~/forum</NuxtLink>
       </div>
     </div>
 
-    <!-- Modals -->
     <PostModal v-model="showEditModal" :edit-post="post" @submitted="onPostUpdated" />
     <ConfirmModal v-model="showDeletePostModal" title="Удалить пост?" message="Пост и все ответы будут удалены безвозвратно." @confirm="confirmDeletePost" />
     <ConfirmModal v-model="showDeleteReplyModal" title="Удалить ответ?" message="Ответ будет удалён безвозвратно." @confirm="confirmDeleteReply" />
@@ -247,6 +292,7 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 const route = useRoute()
 const router = useRouter()
 const { isAuthenticated, user, initialize } = useAuth()
@@ -273,14 +319,20 @@ const showDeletePostModal = ref(false)
 const showDeleteReplyModal = ref(false)
 const deleteReplyTarget = ref(null)
 
-// Лайки поста (локальное состояние)
 const postLiked = ref(false)
 const postLikesCount = ref(0)
+
+// состояния для курса
+const course = ref(null)
+const courseCompleted = ref(false)
+const userRating = ref(null)
 
 const canEditPost = computed(() => {
   if (!user.value || !post.value) return false
   return user.value.id === post.value.userId || user.value.role === 'ADMIN'
 })
+
+const isCoursePost = computed(() => !!post.value?.courseId)
 
 const canEditReply = (reply) => {
   if (!user.value) return false
@@ -305,6 +357,7 @@ const loadPost = async () => {
     post.value = data
     postLiked.value = data.likedByMe ?? false
     postLikesCount.value = data.likesCount ?? 0
+    await loadCourseInfo()
   } catch (e) {
     showError(handleApiError(e, 'Не удалось загрузить пост'))
   } finally {
@@ -322,6 +375,49 @@ const loadReplies = async (page = 1) => {
     showError(handleApiError(e, 'Не удалось загрузить ответы'))
   } finally {
     repliesLoading.value = false
+  }
+}
+
+const loadCourseInfo = async () => {
+  if (!post.value?.courseId) {
+    course.value = null
+    return
+  }
+  try {
+    // Загружаем данные курса (включая средний рейтинг)
+    const courseData = await apiRequest(`/courses/${post.value.courseId}`)
+    course.value = courseData
+
+    // Если авторизован, проверяем прогресс и личную оценку
+    if (isAuthenticated.value) {
+      const progress = await apiRequest(`/courses/${post.value.courseId}/progress`).catch(() => null)
+      courseCompleted.value = progress?.status === 'completed'
+      
+      const ratingData = await apiRequest(`/courses/${post.value.courseId}/ratings/me`).catch(() => null)
+      userRating.value = ratingData?.rating ?? null
+    }
+  } catch (e) {
+    console.error('Course info error:', e)
+  }
+}
+
+const rateCourse = async (rating) => {
+  if (!isAuthenticated.value || !courseCompleted.value || !post.value.courseId) return
+  const prevRating = userRating.value
+  userRating.value = rating
+  try {
+    const res = await apiRequest(`/courses/${post.value.courseId}/ratings`, {
+      method: 'POST',
+      body: { rating }
+    })
+    if (course.value) {
+      course.value.averageRating = res.average
+      course.value.ratingsCount = res.count
+    }
+    success('Rating updated!')
+  } catch (e) {
+    userRating.value = prevRating
+    showError(handleApiError(e, 'Не удалось оценить курс'))
   }
 }
 

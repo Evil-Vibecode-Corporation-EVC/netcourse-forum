@@ -161,26 +161,58 @@
 
       <!-- Посты -->
       <section id="posts">
-        <div class="flex items-center justify-between mb-6 gap-4 flex-wrap">
-          <div class="flex items-center gap-3">
-            <div class="flex gap-1">
-              <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-              <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
-              <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+        <div class="flex flex-col gap-4 mb-6">
+          <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="flex items-center gap-3 flex-wrap">
+              <div class="flex gap-1">
+                <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
+                <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
+                <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
+              </div>
+              <span class="text-slate-400 font-mono text-sm">latest_discussions</span>
+              <span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs px-2.5 py-1 rounded-lg">{{ filteredPosts.length }}</span>
+              <span v-if="activeTag" class="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/25 rounded text-emerald-400 font-mono text-xs">
+                #{{ activeTag }}
+              </span>
             </div>
-            <span class="text-slate-400 font-mono text-sm">latest_discussions</span>
-            <span class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 font-mono text-xs px-2.5 py-1 rounded-lg">{{ filteredPosts.length }}</span>
-            <span v-if="activeTag" class="flex items-center gap-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/25 rounded text-emerald-400 font-mono text-xs">
-              #{{ activeTag }}
-            </span>
+            <button
+              v-if="isAuthenticated"
+              @click="showPostModal = true"
+              class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50 text-emerald-400 font-mono text-sm rounded-xl transition-all"
+            >
+              <span>+</span> new post
+            </button>
           </div>
-          <button
-            v-if="isAuthenticated"
-            @click="showPostModal = true"
-            class="flex items-center gap-2 px-4 py-2 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/50 text-emerald-400 font-mono text-sm rounded-xl transition-all"
-          >
-            <span>+</span> new post
-          </button>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <span class="text-slate-400 font-mono text-xs uppercase tracking-[0.2em]">filter</span>
+            <button
+              @click="changeCourseFilter('all')"
+              :class="courseFilterType === 'all' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300'"
+              class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
+            >Все посты</button>
+            <button
+              @click="changeCourseFilter('course')"
+              :class="courseFilterType === 'course' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300'"
+              class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
+            >Посты про курсы</button>
+            <button
+              @click="changeCourseFilter('other')"
+              :class="courseFilterType === 'other' ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'"
+              class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
+            >Обычные посты</button>
+
+            <div v-if="courseFilterType === 'course'" class="flex items-center gap-3 flex-wrap">
+              <span class="text-slate-500 font-mono text-xs">course</span>
+              <select
+                v-model.number="selectedCourseId"
+                class="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-xl px-3 py-2 outline-none transition-all"
+              >
+                <option :value="null">Все курсы</option>
+                <option v-for="course in courseOptions" :key="course.id" :value="course.id">{{ course.title }}</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <!-- Loading -->
@@ -199,96 +231,18 @@
           </button>
         </div>
 
-        <!-- Posts list -->
+        <!-- Posts list с использованием компонента ForumPostCard -->
         <div v-else-if="filteredPosts.length" class="space-y-3">
-          <div
+          <ForumPostCard
             v-for="post in filteredPosts"
             :key="post.id"
-            class="group bg-slate-900 border border-slate-800 hover:border-emerald-500/30 rounded-xl p-5 transition-all cursor-pointer"
+            :post="post"
+            :course-map="courseMap"
+            :current-user="user"
             @click="navigateTo(`/forum/${post.id}`)"
-          >
-            <div class="flex items-start gap-4">
-              <!-- Аватар с tooltip -->
-              <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
-                <div class="w-10 h-10 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 hover:border-emerald-500/60 transition-all cursor-pointer">
-                  <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-                  <span v-else class="text-emerald-400 font-mono text-sm font-bold">
-                    {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
-                  </span>
-                </div>
-              </UserTooltip>
-
-              <!-- Content -->
-              <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 flex-wrap mb-2">
-                  <span class="text-emerald-400 font-mono text-sm font-semibold">{{ post.user?.username || 'anonymous' }}</span>
-                  <span class="text-slate-600 font-mono text-xs">·</span>
-                  <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
-                  <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
-                </div>
-
-                <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">
-                  {{ post.title }}
-                </h3>
-
-                <p class="text-slate-400 text-sm leading-relaxed line-clamp-2 mb-3">
-                  {{ post.body }}
-                </p>
-
-                <!-- Теги поста -->
-                <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
-                  <button
-                    v-for="tag in post.tags"
-                    :key="tag"
-                    @click.stop="filterByTag(tag)"
-                    class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-400 font-mono text-xs hover:bg-emerald-500/20 transition-all"
-                  >
-                    #{{ tag }}
-                  </button>
-                </div>
-
-                <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
-                  <span class="flex items-center gap-1.5">
-                    <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                    {{ post.replies?.length || 0 }} replies
-                  </span>
-
-                  <!-- Лайки -->
-                  <button
-                    class="flex items-center gap-1.5 transition-all"
-                    :class="post.likedByMe ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"
-                    @click.stop="toggleLike(post)"
-                    :disabled="!isAuthenticated"
-                    :title="isAuthenticated ? (post.likedByMe ? 'Убрать лайк' : 'Лайк') : 'Войдите'"
-                  >
-                    <svg
-                      class="w-3.5 h-3.5 transition-transform hover:scale-110"
-                      :class="post.likedByMe ? 'fill-emerald-400' : 'fill-none'"
-                      viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
-                    >
-                      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
-                    </svg>
-                    <span>{{ post.likesCount ?? 0 }}</span>
-                  </button>
-
-                  <span class="flex items-center gap-1.5 ml-auto">
-                    <span class="w-1 h-1 bg-emerald-500/60 rounded-full"></span>
-                    #{{ post.id }}
-                  </span>
-                </div>
-              </div>
-
-              <!-- Actions -->
-              <div v-if="canEditPost(post)" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
-                <button @click="openEdit(post)" class="p-2 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 transition-all" title="Редактировать">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                </button>
-                <button @click="openDelete(post)" class="p-2 rounded-lg bg-slate-800 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/40 text-slate-400 hover:text-red-400 transition-all" title="Удалить">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                </button>
-              </div>
-            </div>
-          </div>
+            @edit="openEdit"
+            @delete="openDelete"
+          />
         </div>
 
         <!-- Empty -->
@@ -328,15 +282,52 @@
 </template>
 
 <script setup>
+import { ref, computed, onMounted } from 'vue'
+import ForumPostCard from '~/components/ForumPostCard.vue'
+
 const { isAuthenticated, user, initialize } = useAuth()
-const { forumAPI, apiRequest, handleApiError } = useApi()
+const { forumAPI, courseAPI, handleApiError } = useApi()
 const { toasts, success, error: showError, remove: removeToast } = useToast()
 
 const posts = ref([])
+const courses = ref([])
 const loading = ref(true)
 const error = ref('')
 const meta = ref({ page: 1, limit: 20, total: 0, totalPages: 1 })
 const activeTag = ref('')
+const courseFilterType = ref('all')
+const selectedCourseId = ref(null)
+
+const courseMap = computed(() => {
+  return courses.value.reduce((map, course) => {
+    map[course.id] = course
+    return map
+  }, {})
+})
+
+const coursePosts = computed(() => posts.value.filter(post => post.courseId))
+const courseOptions = computed(() => {
+  const ids = new Set(coursePosts.value.map(post => post.courseId))
+  return courses.value.filter(course => ids.has(course.id))
+})
+
+const filteredPosts = computed(() => {
+  let result = posts.value
+  if (courseFilterType.value === 'course') {
+    result = result.filter(post => post.courseId)
+  } else if (courseFilterType.value === 'other') {
+    result = result.filter(post => !post.courseId)
+  }
+
+  if (selectedCourseId.value) {
+    result = result.filter(post => post.courseId === selectedCourseId.value)
+  }
+
+  if (!activeTag.value) {
+    return result
+  }
+  return result.filter(post => post.tags?.includes(activeTag.value))
+})
 
 const showPostModal = ref(false)
 const showEditModal = ref(false)
@@ -347,29 +338,24 @@ const deleteTarget = ref(null)
 const categories = ['программирование', 'веб-разработка', 'мобильная-разработка', 'devops', 'базы-данных']
 const popularTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'tailwind', 'typescript', 'api']
 
-const filteredPosts = computed(() => {
-  if (!activeTag.value) return posts.value
-  return posts.value.filter(p => p.tags?.includes(activeTag.value))
-})
-
 const filterByTag = (tag) => {
   activeTag.value = activeTag.value === tag ? '' : tag
 }
 
-const canEditPost = (post) => {
-  if (!user.value) return false
-  return user.value.id === post.userId || user.value.role === 'ADMIN'
+const changeCourseFilter = (filter) => {
+  courseFilterType.value = filter
+  if (filter !== 'course') {
+    selectedCourseId.value = null
+  }
 }
 
-const formatDate = (dateStr) => {
-  if (!dateStr) return ''
-  const d = new Date(dateStr)
-  const now = new Date()
-  const diff = Math.floor((now.getTime() - d.getTime()) / 1000)
-  if (diff < 60) return 'только что'
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин. назад`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч. назад`
-  return d.toLocaleDateString('ru-RU')
+const loadCourses = async () => {
+  try {
+    const data = await courseAPI.getAll()
+    courses.value = Array.isArray(data) ? data : data.data || []
+  } catch (e) {
+    console.warn('Не удалось загрузить список курсов:', e)
+  }
 }
 
 const loadPosts = async (page = 1) => {
@@ -389,23 +375,6 @@ const loadPosts = async (page = 1) => {
 const changePage = (p) => {
   if (p < 1 || p > meta.value.totalPages) return
   loadPosts(p)
-}
-
-const toggleLike = async (post) => {
-  if (!isAuthenticated.value) return
-  const wasLiked = post.likedByMe
-  post.likedByMe = !wasLiked
-  post.likesCount = (post.likesCount ?? 0) + (wasLiked ? -1 : 1)
-  try {
-    if (wasLiked) {
-      await apiRequest(`/forum/posts/${post.id}/likes`, { method: 'DELETE' })
-    } else {
-      await apiRequest(`/forum/posts/${post.id}/likes`, { method: 'POST' })
-    }
-  } catch {
-    post.likedByMe = wasLiked
-    post.likesCount += wasLiked ? 1 : -1
-  }
 }
 
 const openEdit = (post) => {
@@ -446,5 +415,6 @@ const onPostUpdated = (updated) => {
 onMounted(() => {
   initialize()
   loadPosts()
+  loadCourses()
 })
 </script>

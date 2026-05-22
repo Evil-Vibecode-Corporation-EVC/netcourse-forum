@@ -128,6 +128,32 @@ export const useApi = () => {
     getByUsername: (username: string) => apiRequest(`/profiles/u/${username}`),
   }
 
+  // ============ КУРСЫ ============
+  const courseAPI = {
+    // Получить список всех курсов
+    getAll: () => apiRequest('/courses'),
+    // Получить курс по ID
+    getById: (courseId: number) => apiRequest(`/courses/${courseId}`),
+
+    // Прогресс пользователя по курсу (требуется авторизация)
+    getProgress: (courseId: number) => apiRequest(`/courses/${courseId}/progress`),
+    // Обновить прогресс (PUT)
+    updateProgress: (courseId: number, status: 'not_started' | 'in_progress' | 'completed') =>
+      apiRequest(`/courses/${courseId}/progress`, {
+        method: 'PUT',
+        body: { status }
+      }),
+
+    // Рейтинги
+    getRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings`),               // средний рейтинг и количество
+    getMyRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings/me`),           // оценка текущего пользователя
+    addOrUpdateRating: (courseId: number, rating: number) =>
+      apiRequest(`/courses/${courseId}/ratings`, {
+        method: 'POST',
+        body: { rating }
+      }),
+  }
+
   // ============ АУТЕНТИФИКАЦИЯ ============
   const authAPI = {
     register: (userData: any) => apiRequest('/auth/register', {
@@ -235,6 +261,7 @@ export const useApi = () => {
     apiRequest,
     forumAPI,
     profileAPI,
+    courseAPI,      // <-- добавлено
     authAPI,
     handleApiError,
     sanitizeData

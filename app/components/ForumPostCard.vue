@@ -1,17 +1,32 @@
 <!-- components/ForumPostCard.vue -->
 <template>
   <article
-    class="group relative bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/50 rounded-xl p-5 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/10 cursor-pointer"
+    :class="[
+      'group relative bg-slate-900 border rounded-xl p-5 transition-all duration-300 cursor-pointer',
+      isCoursePost
+        ? 'border-emerald-500/70 hover:border-emerald-400 shadow-emerald-500/10 hover:shadow-emerald-500/15'
+        : 'border-slate-700 hover:border-emerald-500/25 shadow-slate-950/20 hover:shadow-emerald-500/10'
+    ]"
     @click="$emit('click')"
   >
-    <div class="absolute top-0 right-0 w-6 h-6 border-t border-r border-emerald-500/30 group-hover:border-emerald-500/60 rounded-tr-xl transition-all"></div>
+    <!-- Декоративный уголок (золотой + ярче) -->
+    <div
+      :class="[
+        'absolute top-0 right-0 w-6 h-6 border-t border-r rounded-tr-xl transition-all',
+        isCoursePost ? 'border-emerald-400 group-hover:border-emerald-300' : 'border-emerald-500/30 group-hover:border-emerald-500/60'
+      ]"
+    ></div>
+
 
     <div class="flex items-start gap-3 mb-3">
       <!-- Аватар с tooltip -->
       <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
-        <div class="w-9 h-9 rounded-full bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer">
+        <div
+          class="w-9 h-9 rounded-full border flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer"
+          :class="isCoursePost ? 'border-emerald-400 bg-emerald-500/10' : 'border-emerald-500/30 bg-emerald-500/15'"
+        >
           <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-          <span v-else class="text-emerald-400 font-mono text-sm font-bold">
+          <span v-else :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-bold">
             {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
           </span>
         </div>
@@ -19,10 +34,23 @@
 
       <div class="flex-1 min-w-0">
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-emerald-400 font-mono text-sm font-semibold">{{ post.user?.username || 'anonymous' }}</span>
+          <span :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-semibold">
+            {{ post.user?.username || 'anonymous' }}
+          </span>
           <span class="text-slate-600 font-mono text-xs">·</span>
           <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
           <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
+
+          <!-- Значок курса – более заметный -->
+          <span
+            v-if="isCoursePost"
+            class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
+          >
+            КУРС
+          </span>
+        </div>
+        <div v-if="courseName" class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-emerald-100 font-mono text-xs uppercase tracking-[0.12em]">
+          {{ courseName }}
         </div>
       </div>
 
@@ -44,7 +72,7 @@
       </div>
     </div>
 
-    <h3 class="text-white font-semibold text-base mb-2 group-hover:text-emerald-400 transition-colors leading-snug line-clamp-2">
+    <h3 :class="['text-white font-semibold text-base mb-2 transition-colors leading-snug line-clamp-2', isCoursePost ? 'group-hover:text-emerald-300' : 'group-hover:text-emerald-400']">
       {{ post.title }}
     </h3>
 
@@ -57,7 +85,12 @@
       <span
         v-for="tag in post.tags"
         :key="tag"
-        class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-400 font-mono text-xs hover:bg-emerald-500/20 transition-all cursor-pointer"
+        class="px-2 py-0.5 border rounded text-emerald-400 font-mono text-xs transition-all cursor-pointer"
+        :class="
+          tag === 'курс' || tag === 'course'
+            ? 'bg-emerald-500/30 border-emerald-400 text-emerald-300 hover:bg-emerald-500/50'
+            : 'bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20'
+        "
       >
         #{{ tag }}
       </span>
@@ -65,7 +98,7 @@
 
     <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
       <span class="flex items-center gap-1.5">
-        <svg class="w-3.5 h-3.5 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <svg class="w-3.5 h-3.5" :class="isCoursePost ? 'text-emerald-500' : 'text-slate-600'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         {{ post.replies?.length || 0 }} replies
       </span>
 
@@ -88,7 +121,7 @@
       </button>
 
       <span class="flex items-center gap-1.5 ml-auto">
-        <span class="w-1.5 h-1.5 bg-emerald-500/60 rounded-full"></span>
+        <span class="w-1.5 h-1.5 rounded-full" :class="isCoursePost ? 'bg-emerald-500' : 'bg-emerald-500/60'"></span>
         #{{ post.id }}
       </span>
     </div>
@@ -96,6 +129,8 @@
 </template>
 
 <script setup>
+import { ref, computed } from 'vue'
+
 const props = defineProps({
   post: {
     type: Object,
@@ -105,6 +140,10 @@ const props = defineProps({
   currentUser: {
     type: Object,
     default: null
+  },
+  courseMap: {
+    type: Object,
+    default: () => ({})
   }
 })
 
@@ -114,6 +153,16 @@ const localLiked = ref(props.post.likedByMe ?? false)
 const localLikes = ref(props.post.likesCount ?? 0)
 
 const { apiRequest } = useApi()
+
+const isCoursePost = computed(() => {
+  const tags = props.post.tags || []
+  return !!props.post.courseId || tags.includes('курс') || tags.includes('course')
+})
+
+const courseName = computed(() => {
+  if (!props.post.courseId) return null
+  return props.courseMap?.[props.post.courseId]?.title || `курс #${props.post.courseId}`
+})
 
 const canEdit = computed(() => {
   if (!props.currentUser || !props.post) return false

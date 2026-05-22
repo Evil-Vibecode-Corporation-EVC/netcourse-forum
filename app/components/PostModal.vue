@@ -24,6 +24,7 @@
             </h2>
 
             <form @submit.prevent="handleSubmit" class="relative space-y-4">
+              <!-- title -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// title *</label>
                 <input
@@ -35,6 +36,7 @@
                 />
               </div>
 
+              <!-- body -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// body *</label>
                 <textarea
@@ -50,7 +52,6 @@
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">(необязательно)</span></label>
                 <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-4 py-3 transition-all">
-                  <!-- Выбранные теги -->
                   <div class="flex flex-wrap gap-1.5 mb-2" v-if="form.tags.length">
                     <span
                       v-for="(tag, i) in form.tags"
@@ -78,6 +79,51 @@
                     class="px-2 py-0.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/30 hover:text-emerald-400 rounded text-slate-500 font-mono text-xs transition-all"
                   >
                     +#{{ suggested }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Выбор курса (необязательно) -->
+              <div v-if="isAuthenticated">
+                <label class="block text-slate-400 font-mono text-xs mb-1.5">// course <span class="text-slate-600">(необязательно)</span></label>
+                <select
+                  v-model="form.courseId"
+                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm outline-none transition-all"
+                >
+                  <option :value="null">Без курса</option>
+                  <option
+                    v-for="c in completedCourses"
+                    :key="c.id"
+                    :value="c.id"
+                  >
+                    {{ c.title }}
+                  </option>
+                </select>
+                <div v-if="loadingCourses" class="text-xs text-slate-500 mt-1">Загрузка курсов...</div>
+                <div v-else-if="completedCourses.length === 0" class="text-xs text-slate-500 mt-1">Нет завершённых курсов</div>
+              </div>
+
+              <!-- Оценка курса (появляется только когда выбран курс) -->
+              <div v-if="form.courseId && isAuthenticated" class="p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
+                <span class="block text-slate-400 font-mono text-xs mb-2">Оценка курса</span>
+                <div class="flex items-center gap-1">
+                  <svg
+                    v-for="n in 5"
+                    :key="n"
+                    class="w-6 h-6 cursor-pointer transition-all hover:scale-110"
+                    :class="n <= (form.rating || 0) ? 'text-amber-400' : 'text-slate-600 hover:text-amber-400/50'"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                    @click="form.rating = n"
+                  >
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                  <button
+                    v-if="form.rating"
+                    class="ml-2 text-xs text-slate-500 hover:text-red-400 font-mono"
+                    @click="form.rating = null"
+                  >
+                    сбросить
                   </button>
                 </div>
               </div>
@@ -112,6 +158,8 @@
 </template>
 
 <script setup>
+import { ref, reactive, computed, watch } from 'vue'
+
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
   editPost: { type: Object, default: null }
@@ -119,15 +167,25 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'submitted'])
 
+const { forumAPI, courseAPI, apiRequest } = useApi()
+const { user, isAuthenticated } = useAuth()
+const { error: showError } = useToast()
+
 const isEdit = computed(() => !!props.editPost)
-const form = reactive({ title: '', body: '', tags: [] })
+const form = reactive({
+  title: '',
+  body: '',
+  tags: [],
+  courseId: null,
+  rating: null
+})
 const tagInput = ref('')
 const loading = ref(false)
 const errorMsg = ref('')
-const { forumAPI } = useApi()
 
 const suggestedTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'typescript', 'backend', 'frontend', 'css', 'api', 'sql', 'devops']
 
+// Теги
 const addTag = () => {
   const val = tagInput.value.trim().toLowerCase().replace(/^#/, '').replace(/[^a-zа-яё0-9-_]/gi, '')
   if (val && !form.tags.includes(val) && form.tags.length < 5) {
@@ -152,16 +210,63 @@ const onTagKeydown = (e) => {
   }
 }
 
-watch(() => props.editPost, (val) => {
-  if (val) {
-    form.title = val.title
-    form.body = val.body
-    form.tags = val.tags ? [...val.tags] : []
+// Курсы
+const completedCourses = ref([])
+const loadingCourses = ref(false)
+
+const loadCompletedCourses = async () => {
+  if (!isAuthenticated.value) return
+  loadingCourses.value = true
+  try {
+    const userData = await apiRequest(`/users/${user.value.id}`)
+    const completed = (userData.progresses || [])
+      .filter(p => p.status === 'completed')
+      .map(p => p.courseId)
+
+    if (completed.length) {
+      const courses = await Promise.all(
+        completed.map(courseId => courseAPI.getById(courseId))
+      )
+      completedCourses.value = courses
+    } else {
+      completedCourses.value = []
+    }
+  } catch {
+    completedCourses.value = []
+  } finally {
+    loadingCourses.value = false
+  }
+}
+
+const loadCurrentRating = async (courseId) => {
+  try {
+    const data = await courseAPI.getMyRating(courseId)
+    form.rating = data.rating
+  } catch {
+    form.rating = null
+  }
+}
+
+// Инициализация при открытии/редактировании
+watch(() => props.editPost, (post) => {
+  if (post) {
+    form.title = post.title || ''
+    form.body = post.body || ''
+    form.tags = post.tags ? [...post.tags] : []
+    form.courseId = post.courseId || null
+    form.rating = null
+    if (post.courseId) {
+      loadCurrentRating(post.courseId)
+    }
   } else {
     form.title = ''
     form.body = ''
     form.tags = []
+    form.courseId = null
+    form.rating = null
   }
+  tagInput.value = ''
+  loadCompletedCourses()
 }, { immediate: true })
 
 watch(() => props.modelValue, (val) => {
@@ -172,21 +277,40 @@ watch(() => props.modelValue, (val) => {
       form.title = ''
       form.body = ''
       form.tags = []
+      form.courseId = null
+      form.rating = null
     }
   }
 })
 
+// Отправка формы
 const handleSubmit = async () => {
   loading.value = true
   errorMsg.value = ''
   try {
     let result
-    const payload = { title: form.title, body: form.body, tags: form.tags }
+    const payload = {
+      title: form.title,
+      body: form.body,
+      tags: form.tags,
+      courseId: form.courseId || undefined
+    }
+
     if (isEdit.value) {
       result = await forumAPI.updatePost(props.editPost.id, payload)
     } else {
       result = await forumAPI.createPost(payload)
     }
+
+    // Отправка оценки курса, если выбран курс и поставлена оценка
+    if (form.courseId && form.rating) {
+      try {
+        await courseAPI.addOrUpdateRating(form.courseId, form.rating)
+      } catch (e) {
+        showError(e.message || 'Не удалось сохранить оценку курса')
+      }
+    }
+
     emit('submitted', result)
     emit('update:modelValue', false)
   } catch (e) {

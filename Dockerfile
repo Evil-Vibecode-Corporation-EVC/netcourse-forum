@@ -1,18 +1,17 @@
-FROM node:24-alpine AS base
+FROM node:24-alpine AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm install --production
-
+RUN npm install
 RUN npm run build
 
 FROM node:24-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/dist /usr/src/app/dist
+COPY --from=builder /app/dist ./dist
 
 EXPOSE 3000
 

@@ -11,8 +11,8 @@ FROM node:24-alpine AS runner
 
 WORKDIR /app
 
-COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/.output ./.output
 
 EXPOSE 3000
 
-CMD ["node", "dist/server.js"]
+CMD ["node", ".output/server/index.mjs"]

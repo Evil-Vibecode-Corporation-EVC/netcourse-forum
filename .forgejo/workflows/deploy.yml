@@ -1,0 +1,21 @@
+on:
+    push:
+        branches:
+            - main
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Deploy via SSH
+              run: |
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+                  chmod 600 ~/.ssh/deploy_key
+                  ssh -i ~/.ssh/deploy_key \
+                      -o StrictHostKeyChecking=no \
+                      -p 2232 \
+                      miha@172.17.0.1 \
+                      "cd /home/miha/srv && \
+                       git -C /home/miha/srv/netcourse-forum pull && \
+                       docker compose -f /home/miha/srv/docker-compose.yml -p srv up -d --build netcourse-forum && \
+                       docker system prune -f"

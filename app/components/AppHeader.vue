@@ -255,8 +255,7 @@ const handleProfileClick = async () => {
 }
 
 const handleBackToMain = () => {
-  // TODO: добавить функционал возврата на главный сайт
-  console.log('Вернуться в NetCourse - функционал будет добавлен позже')
+  window.location.href = 'https://netcourse.tech'
   closeMobileMenu()
   closeProfileMenu()
 }

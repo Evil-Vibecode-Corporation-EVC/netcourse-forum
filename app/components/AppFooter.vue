@@ -6,7 +6,7 @@
         <!-- Описание -->
         <div>
           <div class="flex items-center mb-3">
-            <span class="text-xl font-bold font-mono text-emerald-500">Net<span class="text-white">Course/Forum</span></span>
+            <span class="text-white">Course/Forum</span><span class="text-xl font-bold font-mono text-emerald-500">Net<span class="text-white">Course/Forum</span></span>
           </div>
           <p class="text-slate-300 leading-relaxed font-mono text-sm max-w-md">
             Сообщество разработчиков, студентов и энтузиастов IT. Обсуждаем технологии, делимся опытом и помогаем друг другу.

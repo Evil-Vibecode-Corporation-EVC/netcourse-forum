@@ -9,16 +9,16 @@
             <span class="text-white">Course/Forum</span><span class="text-xl font-bold font-mono text-emerald-500">Net<span class="text-white">Course/Forum</span></span>
           </div>
           <p class="text-slate-300 leading-relaxed font-mono text-sm max-w-md">
-            Сообщество разработчиков, студентов и энтузиастов IT. Обсуждаем технологии, делимся опытом и помогаем друг другу.
+            {{ $t('footer.description') }}
           </p>
         </div>
 
         <!-- Правила -->
         <div class="flex flex-col items-start md:items-end">
           <div class="flex gap-4 flex-wrap">
-            <span class="text-slate-400 font-mono text-xs">// будь вежлив</span>
-            <span class="text-slate-400 font-mono text-xs">// никакого спама</span>
-            <span class="text-slate-400 font-mono text-xs">// делись знаниями</span>
+            <span class="text-slate-400 font-mono text-xs">{{ $t('footer.ruleBeKind') }}</span>
+            <span class="text-slate-400 font-mono text-xs">{{ $t('footer.ruleNoSpam') }}</span>
+            <span class="text-slate-400 font-mono text-xs">{{ $t('footer.ruleShare') }}</span>
           </div>
         </div>
       </div>

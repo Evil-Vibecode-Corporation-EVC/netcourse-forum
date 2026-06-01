@@ -48,7 +48,7 @@
               <div class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</div>
             </div>
             <div v-if="isCoursePost && course" class="ml-auto text-right">
-              <div class="text-slate-500 font-mono text-[10px] uppercase tracking-[0.24em] mb-1">курс</div>
+              <div class="text-slate-500 font-mono text-[10px] uppercase tracking-[0.24em] mb-1">{{ $t('forum.post.courseLabel') }}</div>
               <NuxtLink :to="`/courses/${course.id}`" class="text-slate-200 text-sm font-semibold hover:text-white transition-colors block max-w-[220px] truncate">
                 {{ course.title }}
               </NuxtLink>
@@ -75,14 +75,14 @@
                     {{ course.title }}
                   </NuxtLink>
                   <div class="mt-2 text-slate-500 font-mono text-xs">
-                    {{ course.category || 'General' }} · {{ course.averageRating?.toFixed(1) || '0.0' }}/5 · {{ course.ratingsCount || 0 }} оценок
+                    {{ course.category || 'General' }} · {{ course.averageRating?.toFixed(1) || '0.0' }}/5 · {{ course.ratingsCount || 0 }} {{ $t('forum.ratings') }}
                   </div>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap text-slate-400 text-xs">
-                  <span v-if="courseCompleted" class="uppercase tracking-[0.16em]">завершён</span>
-                  <span v-else class="uppercase tracking-[0.16em]">не завершён</span>
-                  <span v-if="userRating !== null">Ваш отзыв: {{ userRating }} из 5</span>
-                  <span v-if="!isAuthenticated">Войдите, чтобы оценить курс.</span>
+                  <span v-if="courseCompleted" class="uppercase tracking-[0.16em]">{{ $t('forum.post.completed') }}</span>
+                  <span v-else class="uppercase tracking-[0.16em]">{{ $t('forum.post.notCompleted') }}</span>
+                  <span v-if="userRating !== null">{{ $t('forum.post.yourRating', { rating: userRating }) }}</span>
+                  <span v-if="!isAuthenticated">{{ $t('forum.post.loginToRate') }}</span>
                 </div>
               </div>
 
@@ -92,7 +92,7 @@
 
               <div class="flex flex-col gap-3">
                 <div class="flex items-center gap-2 text-slate-200 font-mono text-sm">
-                  <span>Оценка автора:</span>
+                  <span>{{ $t('forum.post.authorRating') }}</span>
                   <span class="flex items-center gap-0.5">
                     <template v-for="n in 5" :key="n">
                       <svg
@@ -105,9 +105,9 @@
                       </svg>
                     </template>
                   </span>
-                  <span class="text-slate-500 text-xs">{{ userRating !== null ? `${userRating} / 5` : 'не оценено' }}</span>
+                  <span class="text-slate-500 text-xs">{{ userRating !== null ? `${userRating} / 5` : $t('forum.post.notRated') }}</span>
                 </div>
-                <div v-if="userRating === null" class="text-slate-500 font-mono text-xs">Автор ещё не оставил оценку.</div>
+                <div v-if="userRating === null" class="text-slate-500 font-mono text-xs">{{ $t('forum.post.noAuthorRating') }}</div>
               </div>
             </div>
           </div>
@@ -130,7 +130,7 @@
               :class="postLiked
                 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
                 : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-400'"
-              :title="isAuthenticated ? (postLiked ? 'Убрать лайк' : 'Лайк') : 'Войдите'"
+              :title="isAuthenticated ? (postLiked ? $t('forum.like.remove') : $t('forum.like.add')) : $t('forum.like.loginToLike')"
             >
               <svg
                 class="w-4 h-4 transition-transform hover:scale-110"
@@ -171,7 +171,7 @@
             <textarea
               v-model="replyBody"
               rows="3"
-              placeholder="// Напишите ваш ответ..."
+              :placeholder="$t('forum.post.replyPlaceholder')"
               class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/50 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none mb-3"
             ></textarea>
             <div class="flex justify-end">
@@ -188,7 +188,7 @@
           <div v-else class="bg-slate-900/50 border border-dashed border-slate-700 rounded-xl p-5 mb-6 text-center">
             <span class="text-slate-500 font-mono text-sm">
               <NuxtLink to="/login" class="text-emerald-400 hover:underline">$ login</NuxtLink>
-              , чтобы оставить ответ
+              {{ $t('forum.post.replyToLogin') }}
             </span>
           </div>
 
@@ -225,7 +225,7 @@
                         :disabled="!isAuthenticated"
                         class="flex items-center gap-1.5 font-mono text-xs transition-all"
                         :class="reply.likedByMe ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"
-                        :title="isAuthenticated ? (reply.likedByMe ? 'Убрать лайк' : 'Лайк') : 'Войдите'"
+                        :title="isAuthenticated ? (reply.likedByMe ? $t('forum.like.remove') : $t('forum.like.add')) : $t('forum.like.loginToLike')"
                       >
                         <svg
                           class="w-3.5 h-3.5 transition-transform hover:scale-110"
@@ -285,8 +285,8 @@
     </div>
 
     <PostModal v-model="showEditModal" :edit-post="post" @submitted="onPostUpdated" />
-    <ConfirmModal v-model="showDeletePostModal" title="Удалить пост?" message="Пост и все ответы будут удалены безвозвратно." @confirm="confirmDeletePost" />
-    <ConfirmModal v-model="showDeleteReplyModal" title="Удалить ответ?" message="Ответ будет удалён безвозвратно." @confirm="confirmDeleteReply" />
+    <ConfirmModal v-model="showDeletePostModal" :title="$t('modal.deletePostTitle')" :message="$t('modal.deletePostMessageFull')" @confirm="confirmDeletePost" />
+    <ConfirmModal v-model="showDeleteReplyModal" :title="$t('modal.deleteReplyTitle')" :message="$t('modal.deleteReplyMessage')" @confirm="confirmDeleteReply" />
     <ToastContainer :toasts="toasts" @remove="removeToast" />
   </main>
 </template>
@@ -298,6 +298,7 @@ const router = useRouter()
 const { isAuthenticated, user, initialize } = useAuth()
 const { forumAPI, apiRequest, handleApiError } = useApi()
 const { toasts, success, error: showError, remove: removeToast } = useToast()
+const { $t } = useNuxtApp()
 
 const postId = computed(() => Number(route.params.id))
 const post = ref(null)
@@ -344,9 +345,9 @@ const formatDate = (dateStr) => {
   const d = new Date(dateStr)
   const now = new Date()
   const diff = Math.floor((now.getTime() - d.getTime()) / 1000)
-  if (diff < 60) return 'только что'
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин. назад`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч. назад`
+  if (diff < 60) return $t('time.justNow')
+  if (diff < 3600) return $t('time.minutesAgo', { count: Math.floor(diff / 60) })
+  if (diff < 86400) return $t('time.hoursAgo', { count: Math.floor(diff / 3600) })
   return d.toLocaleDateString('ru-RU')
 }
 
@@ -359,7 +360,7 @@ const loadPost = async () => {
     postLikesCount.value = data.likesCount ?? 0
     await loadCourseInfo()
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось загрузить пост'))
+    showError(handleApiError(e, $t('errors.loadPost')))
   } finally {
     loading.value = false
   }
@@ -372,7 +373,7 @@ const loadReplies = async (page = 1) => {
     replies.value = res.data || []
     replyMeta.value = res.meta || { page: 1, totalPages: 1, total: 0 }
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось загрузить ответы'))
+    showError(handleApiError(e, $t('errors.loadReplies')))
   } finally {
     repliesLoading.value = false
   }
@@ -414,10 +415,10 @@ const rateCourse = async (rating) => {
       course.value.averageRating = res.average
       course.value.ratingsCount = res.count
     }
-    success('Rating updated!')
+    success($t('forum.notifications.ratingUpdated'))
   } catch (e) {
     userRating.value = prevRating
-    showError(handleApiError(e, 'Не удалось оценить курс'))
+    showError(handleApiError(e, $t('errors.rateCourse')))
   }
 }
 
@@ -463,9 +464,9 @@ const submitReply = async () => {
     replies.value.push(created)
     replyMeta.value.total++
     replyBody.value = ''
-    success('Ответ опубликован!')
+    success($t('forum.notifications.replyPublished'))
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось отправить ответ'))
+    showError(handleApiError(e, $t('errors.submitReply')))
   } finally {
     replyLoading.value = false
   }
@@ -483,9 +484,9 @@ const saveEditReply = async (reply) => {
     const idx = replies.value.findIndex(r => r.id === reply.id)
     if (idx !== -1) replies.value[idx] = { ...replies.value[idx], ...updated }
     editingReplyId.value = null
-    success('Ответ обновлён!')
+    success($t('forum.notifications.replyUpdated'))
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось обновить ответ'))
+    showError(handleApiError(e, $t('errors.updateReply')))
   } finally {
     editReplyLoading.value = false
   }
@@ -502,9 +503,9 @@ const confirmDeleteReply = async () => {
     await forumAPI.deleteReply(postId.value, deleteReplyTarget.value.id)
     replies.value = replies.value.filter(r => r.id !== deleteReplyTarget.value.id)
     replyMeta.value.total--
-    success('Ответ удалён')
+    success($t('forum.notifications.replyDeleted'))
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось удалить ответ'))
+    showError(handleApiError(e, $t('errors.deleteReply')))
   } finally {
     showDeleteReplyModal.value = false
     deleteReplyTarget.value = null
@@ -513,16 +514,16 @@ const confirmDeleteReply = async () => {
 
 const onPostUpdated = (updated) => {
   post.value = { ...post.value, ...updated }
-  success('Пост обновлён!')
+  success($t('forum.notifications.postUpdatedMain'))
 }
 
 const confirmDeletePost = async () => {
   try {
     await forumAPI.deletePost(postId.value)
-    success('Пост удалён')
+    success($t('forum.notifications.postDeleted'))
     router.push('/')
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось удалить пост'))
+    showError(handleApiError(e, $t('errors.deletePost')))
   } finally {
     showDeletePostModal.value = false
   }

@@ -33,7 +33,7 @@
               toast.type === 'error' ? 'text-red-400' :
               'text-cyan-400'
             ]">
-              {{ toast.type === 'success' ? '$ SUCCESS' : toast.type === 'error' ? '$ ERROR' : '$ INFO' }}
+              {{ toast.type === 'success' ? $t('toast.success') : toast.type === 'error' ? $t('toast.error') : $t('toast.info') }}
             </div>
             <div class="text-slate-200 text-sm leading-relaxed">
               {{ toast.message }}
@@ -70,6 +70,7 @@
 
 <script setup>
 import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-vue-next'
+const { $t } = useNuxtApp()
 
 const props = defineProps({
   toasts: {

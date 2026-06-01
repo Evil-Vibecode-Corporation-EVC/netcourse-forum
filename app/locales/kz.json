@@ -1,0 +1,152 @@
+{
+  "forum": {
+    "home": {
+      "description": "// Сұрақ қойыңыз, білім бөлісіңіз, курстарды талқылаңыз және пікірлестер табыңыз",
+      "filterAll": "Барлық жазбалар",
+      "filterCourse": "Курстар туралы жазбалар",
+      "filterOther": "Кәдімгі жазбалар",
+      "allCourses": "Барлық курстар",
+      "emptyWithTag": "// #{tag} тегі бар жазбалар жоқ",
+      "emptyPrompt": "Талқылауды бірінші болып бастаңыз!",
+      "reset": "тазалау"
+    },
+    "post": {
+      "courseLabel": "курс",
+      "completed": "аяқталды",
+      "notCompleted": "аяқталмады",
+      "yourRating": "Сіздің бағаңыз: {rating} / 5",
+      "loginToRate": "Курсты бағалау үшін кіріңіз.",
+      "authorRating": "Автордың бағасы:",
+      "notRated": "бағаланбады",
+      "noAuthorRating": "Автор әлі баға қоймады.",
+      "replyPlaceholder": "// Жауабыңызды жазыңыз...",
+      "replyToLogin": ", жауап беру үшін",
+      "noReplies": "// no replies yet — be the first!",
+      "postNotFound": "// post not found"
+    },
+    "notifications": {
+      "postDeleted": "Жазба жойылды",
+      "postPublished": "Жазба жарияланды!",
+      "postUpdated": "Жазба жаңартылды!",
+      "replyPublished": "Жауап жарияланды!",
+      "replyUpdated": "Жауап жаңартылды!",
+      "replyDeleted": "Жауап жойылды",
+      "ratingUpdated": "Rating updated!",
+      "postUpdatedMain": "Жазба жаңартылды!"
+    },
+    "like": {
+      "remove": "Лайкты алу",
+      "add": "Лайк",
+      "loginToLike": "Кіріңіз",
+      "loginToLikeCard": "Лайк басу үшін кіріңіз"
+    },
+    "badge": "КУРС",
+    "editTooltip": "Өңдеу",
+    "deleteTooltip": "Жою",
+    "edited": "(өңделген)",
+    "courseFallback": "курс #{id}",
+    "categoryDescription": {
+      "javascript": "JavaScript, фреймворктар, кітапханалар және үздік тәжірибелер туралы талқылау.",
+      "backend": "Node.js, Python, дерекқорлар, API және серверлік әзірлеу.",
+      "frontend": "React, Vue, дизайн, анимация және пайдаланушы интерфейстері."
+    },
+    "topicCount": "{count} тақырып",
+    "replyCount": "{count} жауап",
+    "likesCount": "{count} лайк",
+    "ratings": "баға"
+  },
+  "modal": {
+    "deletePostTitle": "Жазбаны жою?",
+    "deletePostMessage": "Жазба және оған берілген барлық жауаптар қайтарымсыз жойылады.",
+    "deletePostMessageFull": "Жазба және барлық жауаптар қайтарымсыз жойылады.",
+    "deleteReplyTitle": "Жауапты жою?",
+    "deleteReplyMessage": "Жауап қайтарымсыз жойылады.",
+    "confirmDelete": "Әрекетті растаңыз",
+    "confirmDeleteMsg": "Бұл әрекетті қайтару мүмкін емес.",
+    "optional": "(міндетті емес)",
+    "noCourse": "Курссыз",
+    "loadingCourses": "Курстар жүктелуде...",
+    "noCompletedCourses": "Аяқталған курстар жоқ",
+    "courseRating": "Курсты бағалау",
+    "reset": "тазалау",
+    "sending": "Жіберілуде...",
+    "tagPlaceholder": "javascript, vue, python... (Enter қосу үшін)",
+    "titlePlaceholder": "Жазба тақырыбын енгізіңіз...",
+    "bodyPlaceholder": "Жазба мазмұнын жазыңыз...",
+    "saveError": "Курс бағасын сақтау мүмкін болмады",
+    "genericError": "Қате орын алды"
+  },
+  "header": {
+    "backToMain": "NetCourse-ке оралу",
+    "profile": "Профиль",
+    "logout": "Шығу",
+    "openMenu": "Мәзірді ашу",
+    "avatar": "Аватар"
+  },
+  "footer": {
+    "description": "Әзірлеушілер, студенттер және IT әуесқойларының қауымдастығы. Технологияларды талқылаймыз, тәжірибе бөлісеміз және бір-бірімізге көмектесеміз.",
+    "ruleBeKind": "// сыпайы бол",
+    "ruleNoSpam": "// спам жоқ",
+    "ruleShare": "// білім бөліс"
+  },
+  "auth": {
+    "loginPrompt": "// Аккаунт деректеріңізді енгізіңіз",
+    "loadingLogin": "Кіру...",
+    "noAccount": "Аккаунт жоқ па?",
+    "invalidCredentials": "Қате email немесе құпия сөз",
+    "registerPrompt": "Аккаунт жасау",
+    "registerLoading": "Тіркелу...",
+    "alreadyHaveAccount": "Аккаунтыңыз бар ма?",
+    "registerSuccess": "Аккаунт жасалды! Қайта бағытталуда...",
+    "registerError": "Тіркеу қатесі",
+    "noToken": "Сервер авторизация токенін қайтармады",
+    "registerRedirect": "Тіркеу сәтті! Жүйеге кіріңіз."
+  },
+  "profile": {
+    "loading": "$ профиль жүктелуде...",
+    "notFound": "// профиль табылмады немесе жойылған",
+    "noBio": "// био әлі толтырылмаған",
+    "since": "{date} бастап",
+    "posts": "жазба",
+    "replies": "жауап",
+    "certificates": "сертификат",
+    "issued": "Берілген күні: {date}",
+    "course": "Курс",
+    "records": "жазба",
+    "noPosts": "// сізде әлі жазбалар жоқ",
+    "createFirstPost": "$ бірінші жазбаны жасау",
+    "noUserPosts": "// пайдаланушы әлі жарияланым жасамаған",
+    "soonPosts": "$ echo \"жақында жазбалар пайда болады\""
+  },
+  "time": {
+    "justNow": "дәл қазір",
+    "minutesAgo": "{count} мин. бұрын",
+    "hoursAgo": "{count} сағ. бұрын"
+  },
+  "toast": {
+    "success": "$ SUCCESS",
+    "error": "$ ERROR",
+    "info": "$ INFO"
+  },
+  "errors": {
+    "serverError": "Сервердің ішкі қатесі. Кейінірек қайталап көріңіз.",
+    "unauthorized": "Сессия мерзімі бітті. Жүйеге қайта кіріңіз.",
+    "forbidden": "Бұл әрекетті орындауға құқығыңыз жеткіліксіз.",
+    "notFound": "Сұралған ресурс табылмады.",
+    "conflict": "Ресурс бар немесе деректер қайшылығы туындады.",
+    "validation": "Деректер дұрыс емес. Енгізілген ақпаратты тексеріңіз.",
+    "networkError": "Серверге қосылу мүмкін болмады. Интернет байланысын тексеріңіз.",
+    "timeout": "Сервер жауап бермейді. Кейінірек қайталап көріңіз.",
+    "invalidResponse": "Серверден дұрыс емес жауап.",
+    "loadPosts": "Жазбаларды жүктеу мүмкін болмады",
+    "loadPost": "Жазбаны жүктеу мүмкін болмады",
+    "deletePost": "Жазбаны жою мүмкін болмады",
+    "loadReplies": "Жауаптарды жүктеу мүмкін болмады",
+    "submitReply": "Жауапты жіберу мүмкін болмады",
+    "updateReply": "Жауапты жаңарту мүмкін болмады",
+    "deleteReply": "Жауапты жою мүмкін болмады",
+    "rateCourse": "Курсты бағалау мүмкін болмады",
+    "loadCourses": "Курстар тізімін жүктеу мүмкін болмады",
+    "default": "Қате орын алды"
+  }
+}

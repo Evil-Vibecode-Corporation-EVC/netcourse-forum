@@ -11,7 +11,7 @@
     <div v-if="loading" class="flex items-center justify-center min-h-[70vh]">
       <div class="text-center">
         <div class="w-12 h-12 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 mx-auto mb-5"></div>
-        <p class="text-emerald-400/70 font-mono text-sm tracking-wide">$ загрузка профиля...</p>
+        <p class="text-emerald-400/70 font-mono text-sm tracking-wide">{{ $t('profile.loading') }}</p>
       </div>
     </div>
 
@@ -26,7 +26,7 @@
             </svg>
           </div>
         </div>
-        <p class="text-slate-400 font-mono text-sm mb-8">// профиль не найден или удален</p>
+        <p class="text-slate-400 font-mono text-sm mb-8">{{ $t('profile.notFound') }}</p>
         <NuxtLink to="/" class="inline-flex items-center gap-2 px-5 py-2 bg-emerald-500/10 border border-emerald-500/30 rounded-full text-emerald-400 font-mono text-sm">
           <span>$ cd ~</span>
           <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -104,28 +104,28 @@
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
                     <span class="text-xl font-bold text-white">{{ profile.stats?.postsCount ?? 0 }}</span>
                   </div>
-                  <span class="text-slate-400 text-xs font-mono">постов</span>
+                  <span class="text-slate-400 text-xs font-mono">{{ $t('profile.posts') }}</span>
                 </div>
                 <div class="bg-slate-800/50 rounded-xl p-3 text-center border border-slate-700/50">
                   <div class="flex items-center justify-center gap-1 text-emerald-400 mb-1">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
                     <span class="text-xl font-bold text-white">{{ profile.stats?.repliesCount ?? 0 }}</span>
                   </div>
-                  <span class="text-slate-400 text-xs font-mono">ответов</span>
+                  <span class="text-slate-400 text-xs font-mono">{{ $t('profile.replies') }}</span>
                 </div>
                 <div v-if="profile.certifications?.length" class="bg-slate-800/50 rounded-xl p-3 text-center border border-slate-700/50">
                   <div class="flex items-center justify-center gap-1 text-yellow-400 mb-1">
                     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
                     <span class="text-xl font-bold text-white">{{ profile.certifications.length }}</span>
                   </div>
-                  <span class="text-slate-400 text-xs font-mono">сертификатов</span>
+                  <span class="text-slate-400 text-xs font-mono">{{ $t('profile.certificates') }}</span>
                 </div>
               </div>
 
               <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-xs font-mono text-slate-500">
                 <div v-if="profile.createdAt" class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                  <span>с {{ formatDate(profile.createdAt) }}</span>
+                  <span>{{ $t('profile.since', { date: formatDate(profile.createdAt) }) }}</span>
                 </div>
                 <div class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -185,8 +185,8 @@
               <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
             </div>
             <div class="min-w-0 flex-1">
-              <p class="text-white text-sm font-semibold font-mono truncate">{{ cert.course?.title || 'Курс' }}</p>
-              <p class="text-slate-500 text-xs mt-0.5">Выдан: {{ formatDate(cert.issuedAt) }}</p>
+              <p class="text-white text-sm font-semibold font-mono truncate">{{ cert.course?.title || $t('profile.course') }}</p>
+              <p class="text-slate-500 text-xs mt-0.5">{{ $t('profile.issued', { date: formatDate(cert.issuedAt) }) }}</p>
             </div>
           </div>
         </div>
@@ -201,7 +201,7 @@
             <div class="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
           </div>
           <span class="text-slate-400 font-mono text-xs ml-2">recent_posts</span>
-          <span class="ml-auto text-slate-500 text-xs">{{ userPosts.length }} записей</span>
+          <span class="ml-auto text-slate-500 text-xs">{{ userPosts.length }} {{ $t('profile.records') }}</span>
         </div>
 
         <div v-if="userPosts.length" class="divide-y divide-slate-800/60">
@@ -230,8 +230,8 @@
           <div class="w-16 h-16 bg-slate-800/60 rounded-2xl flex items-center justify-center mb-4 border border-slate-700">
             <svg class="w-7 h-7 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
-          <p class="text-slate-500 font-mono text-sm">// пользователь еще не создал публикаций</p>
-          <p class="text-slate-600 text-xs mt-1">$ echo "скоро здесь появятся посты"</p>
+          <p class="text-slate-500 font-mono text-sm">{{ $t('profile.noUserPosts') }}</p>
+          <p class="text-slate-600 text-xs mt-1">{{ $t('profile.soonPosts') }}</p>
         </div>
       </div>
     </div>
@@ -241,6 +241,7 @@
 <script setup>
 const route = useRoute()
 const { apiRequest, forumAPI } = useApi()
+const { $t } = useNuxtApp()
 
 const profile = ref(null)
 const loading = ref(true)

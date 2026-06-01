@@ -46,7 +46,7 @@
             v-if="isCoursePost"
             class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
           >
-            КУРС
+            {{ $t('forum.badge') }}
           </span>
         </div>
         <div v-if="courseName" class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-emerald-100 font-mono text-xs uppercase tracking-[0.12em]">
@@ -58,14 +58,14 @@
         <button
           @click="$emit('edit', post)"
           class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 transition-all"
-          title="Редактировать"
+          :title="$t('forum.editTooltip')"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         </button>
         <button
           @click="$emit('delete', post)"
           class="p-1.5 rounded-lg bg-slate-800 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/40 text-slate-400 hover:text-red-400 transition-all"
-          title="Удалить"
+          :title="$t('forum.deleteTooltip')"
         >
           <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
         </button>
@@ -108,7 +108,7 @@
         :class="localLiked ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"
         @click.stop="toggleLike"
         :disabled="!currentUser"
-        :title="currentUser ? (localLiked ? 'Убрать лайк' : 'Лайк') : 'Войдите чтобы лайкнуть'"
+        :title="currentUser ? (localLiked ? $t('forum.like.remove') : $t('forum.like.add')) : $t('forum.like.loginToLikeCard')"
       >
         <svg
           class="w-3.5 h-3.5 transition-transform group-hover/like:scale-110"
@@ -153,6 +153,7 @@ const localLiked = ref(props.post.likedByMe ?? false)
 const localLikes = ref(props.post.likesCount ?? 0)
 
 const { apiRequest } = useApi()
+const { $t } = useNuxtApp()
 
 const isCoursePost = computed(() => {
   const tags = props.post.tags || []
@@ -161,7 +162,7 @@ const isCoursePost = computed(() => {
 
 const courseName = computed(() => {
   if (!props.post.courseId) return null
-  return props.courseMap?.[props.post.courseId]?.title || `курс #${props.post.courseId}`
+  return props.courseMap?.[props.post.courseId]?.title || $t('forum.courseFallback', { id: props.post.courseId })
 })
 
 const canEdit = computed(() => {
@@ -193,9 +194,9 @@ const formatDate = (dateStr) => {
   const d = new Date(dateStr)
   const now = new Date()
   const diff = Math.floor((now.getTime() - d.getTime()) / 1000)
-  if (diff < 60) return 'только что'
-  if (diff < 3600) return `${Math.floor(diff / 60)} мин. назад`
-  if (diff < 86400) return `${Math.floor(diff / 3600)} ч. назад`
+  if (diff < 60) return $t('time.justNow')
+  if (diff < 3600) return $t('time.minutesAgo', { count: Math.floor(diff / 60) })
+  if (diff < 86400) return $t('time.hoursAgo', { count: Math.floor(diff / 3600) })
   return d.toLocaleDateString('ru-RU')
 }
 </script>

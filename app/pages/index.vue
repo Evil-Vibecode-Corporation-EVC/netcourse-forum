@@ -21,7 +21,7 @@
         </h1>
 
         <p class="text-slate-400 font-mono text-sm sm:text-base max-w-xl mx-auto mb-10 leading-relaxed">
-          // Задавай вопросы, делись знаниями,<br />обсуждай курсы и находи единомышленников
+          {{ $t('forum.home.description') }}
         </p>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -68,7 +68,7 @@
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#popular</span>
             </div>
             <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">JavaScript</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">Обсуждение JavaScript, фреймворков, библиотек и лучших практик.</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.javascript') }}</p>
             <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>124 темы</span><span>1.2k ответов</span></div>
           </div>
 
@@ -80,7 +80,7 @@
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#trending</span>
             </div>
             <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Backend Development</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">Node.js, Python, базы данных, API и серверная разработка.</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.backend') }}</p>
             <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>89 тем</span><span>845 ответов</span></div>
           </div>
 
@@ -92,7 +92,7 @@
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#new</span>
             </div>
             <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Frontend & UI/UX</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">React, Vue, дизайн, анимации и пользовательские интерфейсы.</p>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.frontend') }}</p>
             <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>156 тем</span><span>2.1k ответов</span></div>
           </div>
         </div>
@@ -152,7 +152,7 @@
                 @click="activeTag = ''"
                 class="px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 font-mono text-xs hover:bg-red-500/20 transition-all"
               >
-                ✕ сбросить
+                ✕ {{ $t('forum.home.reset') }}
               </button>
             </div>
           </div>
@@ -190,17 +190,17 @@
               @click="changeCourseFilter('all')"
               :class="courseFilterType === 'all' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300'"
               class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
-            >Все посты</button>
+            >{{ $t('forum.home.filterAll') }}</button>
             <button
               @click="changeCourseFilter('course')"
               :class="courseFilterType === 'course' ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-300' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-300'"
               class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
-            >Посты про курсы</button>
+            >{{ $t('forum.home.filterCourse') }}</button>
             <button
               @click="changeCourseFilter('other')"
               :class="courseFilterType === 'other' ? 'bg-slate-700 border-slate-600 text-slate-200' : 'bg-slate-900 border-slate-700 text-slate-400 hover:border-slate-500 hover:text-slate-300'"
               class="px-3 py-1.5 border rounded-full text-xs font-mono transition-all"
-            >Обычные посты</button>
+            >{{ $t('forum.home.filterOther') }}</button>
 
             <div v-if="courseFilterType === 'course'" class="flex items-center gap-3 flex-wrap">
               <span class="text-slate-500 font-mono text-xs">course</span>
@@ -208,7 +208,7 @@
                 v-model.number="selectedCourseId"
                 class="bg-slate-900 border border-slate-700 text-slate-200 text-sm rounded-xl px-3 py-2 outline-none transition-all"
               >
-                <option :value="null">Все курсы</option>
+                <option :value="null">{{ $t('forum.home.allCourses') }}</option>
                 <option v-for="course in courseOptions" :key="course.id" :value="course.id">{{ course.title }}</option>
               </select>
             </div>
@@ -251,9 +251,9 @@
             <svg class="w-8 h-8 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
           </div>
           <div class="text-slate-400 font-mono mb-2">
-            {{ activeTag ? `// нет постов с тегом #${activeTag}` : '// no posts yet' }}
+            {{ activeTag ? $t('forum.home.emptyWithTag', { tag: activeTag }) : '// no posts yet' }}
           </div>
-          <div class="text-slate-600 font-mono text-sm">Будьте первым, кто начнёт обсуждение!</div>
+          <div class="text-slate-600 font-mono text-sm">{{ $t('forum.home.emptyPrompt') }}</div>
         </div>
 
         <!-- Pagination -->
@@ -276,7 +276,7 @@
     <!-- Modals -->
     <PostModal v-model="showPostModal" @submitted="onPostCreated" />
     <PostModal v-model="showEditModal" :edit-post="editTarget" @submitted="onPostUpdated" />
-    <ConfirmModal v-model="showDeleteModal" title="Удалить пост?" message="Пост и все ответы к нему будут удалены безвозвратно." @confirm="confirmDelete" />
+    <ConfirmModal v-model="showDeleteModal" :title="$t('modal.deletePostTitle')" :message="$t('modal.deletePostMessage')" @confirm="confirmDelete" />
     <ToastContainer :toasts="toasts" @remove="removeToast" />
   </main>
 </template>
@@ -284,6 +284,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import ForumPostCard from '~/components/ForumPostCard.vue'
+
+const { $t } = useNuxtApp()
 
 const { isAuthenticated, user, initialize } = useAuth()
 const { forumAPI, courseAPI, handleApiError } = useApi()
@@ -354,7 +356,7 @@ const loadCourses = async () => {
     const data = await courseAPI.getAll()
     courses.value = Array.isArray(data) ? data : data.data || []
   } catch (e) {
-    console.warn('Не удалось загрузить список курсов:', e)
+    console.warn($t('errors.loadCourses'), e)
   }
 }
 
@@ -366,7 +368,7 @@ const loadPosts = async (page = 1) => {
     posts.value = res.data || []
     meta.value = res.meta || { page: 1, totalPages: 1, total: 0 }
   } catch (e) {
-    error.value = handleApiError(e, 'Не удалось загрузить посты')
+    error.value = handleApiError(e, $t('errors.loadPosts'))
   } finally {
     loading.value = false
   }
@@ -392,9 +394,9 @@ const confirmDelete = async () => {
   try {
     await forumAPI.deletePost(deleteTarget.value.id)
     posts.value = posts.value.filter(p => p.id !== deleteTarget.value.id)
-    success('Пост удалён')
+    success($t('forum.notifications.postDeleted'))
   } catch (e) {
-    showError(handleApiError(e, 'Не удалось удалить пост'))
+    showError(handleApiError(e, $t('errors.deletePost')))
   } finally {
     showDeleteModal.value = false
     deleteTarget.value = null
@@ -403,13 +405,13 @@ const confirmDelete = async () => {
 
 const onPostCreated = (newPost) => {
   posts.value.unshift(newPost)
-  success('Пост опубликован!')
+  success($t('forum.notifications.postPublished'))
 }
 
 const onPostUpdated = (updated) => {
   const idx = posts.value.findIndex(p => p.id === updated.id)
   if (idx !== -1) posts.value[idx] = { ...posts.value[idx], ...updated }
-  success('Пост обновлён!')
+  success($t('forum.notifications.postUpdated'))
 }
 
 onMounted(() => {

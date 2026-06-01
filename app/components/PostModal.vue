@@ -30,7 +30,7 @@
                 <input
                   v-model="form.title"
                   type="text"
-                  placeholder="Введите заголовок поста..."
+                  :placeholder="$t('modal.titlePlaceholder')"
                   required
                   class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all"
                 />
@@ -42,7 +42,7 @@
                 <textarea
                   v-model="form.body"
                   rows="6"
-                  placeholder="Напишите содержание поста..."
+                  :placeholder="$t('modal.bodyPlaceholder')"
                   required
                   class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none leading-relaxed"
                 ></textarea>
@@ -50,7 +50,7 @@
 
               <!-- Теги -->
               <div>
-                <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">(необязательно)</span></label>
+                <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-4 py-3 transition-all">
                   <div class="flex flex-wrap gap-1.5 mb-2" v-if="form.tags.length">
                     <span
@@ -65,7 +65,7 @@
                   <input
                     v-model="tagInput"
                     type="text"
-                    placeholder="javascript, vue, python... (Enter чтобы добавить)"
+                    :placeholder="$t('modal.tagPlaceholder')"
                     class="w-full bg-transparent text-white font-mono text-sm placeholder-slate-600 outline-none"
                     @keydown="onTagKeydown"
                   />
@@ -85,12 +85,12 @@
 
               <!-- Выбор курса (необязательно) -->
               <div v-if="isAuthenticated">
-                <label class="block text-slate-400 font-mono text-xs mb-1.5">// course <span class="text-slate-600">(необязательно)</span></label>
+                <label class="block text-slate-400 font-mono text-xs mb-1.5">// course <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <select
                   v-model="form.courseId"
                   class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm outline-none transition-all"
                 >
-                  <option :value="null">Без курса</option>
+                  <option :value="null">{{ $t('modal.noCourse') }}</option>
                   <option
                     v-for="c in completedCourses"
                     :key="c.id"
@@ -99,13 +99,13 @@
                     {{ c.title }}
                   </option>
                 </select>
-                <div v-if="loadingCourses" class="text-xs text-slate-500 mt-1">Загрузка курсов...</div>
-                <div v-else-if="completedCourses.length === 0" class="text-xs text-slate-500 mt-1">Нет завершённых курсов</div>
+                <div v-if="loadingCourses" class="text-xs text-slate-500 mt-1">{{ $t('modal.loadingCourses') }}</div>
+                <div v-else-if="completedCourses.length === 0" class="text-xs text-slate-500 mt-1">{{ $t('modal.noCompletedCourses') }}</div>
               </div>
 
               <!-- Оценка курса (появляется только когда выбран курс) -->
               <div v-if="form.courseId && isAuthenticated" class="p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
-                <span class="block text-slate-400 font-mono text-xs mb-2">Оценка курса</span>
+                <span class="block text-slate-400 font-mono text-xs mb-2">{{ $t('modal.courseRating') }}</span>
                 <div class="flex items-center gap-1">
                   <svg
                     v-for="n in 5"
@@ -123,7 +123,7 @@
                     class="ml-2 text-xs text-slate-500 hover:text-red-400 font-mono"
                     @click="form.rating = null"
                   >
-                    сбросить
+                    {{ $t('modal.reset') }}
                   </button>
                 </div>
               </div>
@@ -139,7 +139,7 @@
                   class="flex-1 py-3 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/60 text-emerald-400 font-mono text-sm font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <div v-if="loading" class="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
-                  <span>{{ loading ? 'Отправка...' : (isEdit ? '$ update.sh' : '$ publish.sh') }}</span>
+                  <span>{{ loading ? $t('modal.sending') : (isEdit ? '$ update.sh' : '$ publish.sh') }}</span>
                 </button>
                 <button
                   type="button"
@@ -159,6 +159,7 @@
 
 <script setup>
 import { ref, reactive, computed, watch } from 'vue'
+const { $t } = useNuxtApp()
 
 const props = defineProps({
   modelValue: { type: Boolean, default: false },
@@ -307,14 +308,14 @@ const handleSubmit = async () => {
       try {
         await courseAPI.addOrUpdateRating(form.courseId, form.rating)
       } catch (e) {
-        showError(e.message || 'Не удалось сохранить оценку курса')
+        showError(e.message || $t('modal.saveError'))
       }
     }
 
     emit('submitted', result)
     emit('update:modelValue', false)
   } catch (e) {
-    errorMsg.value = e.message || 'Произошла ошибка'
+    errorMsg.value = e.message || $t('modal.genericError')
   } finally {
     loading.value = false
   }

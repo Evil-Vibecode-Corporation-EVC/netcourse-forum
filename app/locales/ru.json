@@ -1,0 +1,152 @@
+{
+  "forum": {
+    "home": {
+      "description": "// Задавай вопросы, делись знаниями, обсуждай курсы и находи единомышленников",
+      "filterAll": "Все посты",
+      "filterCourse": "Посты про курсы",
+      "filterOther": "Обычные посты",
+      "allCourses": "Все курсы",
+      "emptyWithTag": "// нет постов с тегом #{tag}",
+      "emptyPrompt": "Будьте первым, кто начнёт обсуждение!",
+      "reset": "сбросить"
+    },
+    "post": {
+      "courseLabel": "курс",
+      "completed": "завершён",
+      "notCompleted": "не завершён",
+      "yourRating": "Ваш отзыв: {rating} из 5",
+      "loginToRate": "Войдите, чтобы оценить курс.",
+      "authorRating": "Оценка автора:",
+      "notRated": "не оценено",
+      "noAuthorRating": "Автор ещё не оставил оценку.",
+      "replyPlaceholder": "// Напишите ваш ответ...",
+      "replyToLogin": ", чтобы оставить ответ",
+      "noReplies": "// no replies yet — be the first!",
+      "postNotFound": "// post not found"
+    },
+    "notifications": {
+      "postDeleted": "Пост удалён",
+      "postPublished": "Пост опубликован!",
+      "postUpdated": "Пост обновлён!",
+      "replyPublished": "Ответ опубликован!",
+      "replyUpdated": "Ответ обновлён!",
+      "replyDeleted": "Ответ удалён",
+      "ratingUpdated": "Rating updated!",
+      "postUpdatedMain": "Пост обновлён!"
+    },
+    "like": {
+      "remove": "Убрать лайк",
+      "add": "Лайк",
+      "loginToLike": "Войдите",
+      "loginToLikeCard": "Войдите чтобы лайкнуть"
+    },
+    "badge": "КУРС",
+    "editTooltip": "Редактировать",
+    "deleteTooltip": "Удалить",
+    "edited": "(edited)",
+    "courseFallback": "курс #{id}",
+    "categoryDescription": {
+      "javascript": "Обсуждение JavaScript, фреймворков, библиотек и лучших практик.",
+      "backend": "Node.js, Python, базы данных, API и серверная разработка.",
+      "frontend": "React, Vue, дизайн, анимации и пользовательские интерфейсы."
+    },
+    "topicCount": "{count} тем",
+    "replyCount": "{count} ответов",
+    "likesCount": "{count} лайков",
+    "ratings": "оценок"
+  },
+  "modal": {
+    "deletePostTitle": "Удалить пост?",
+    "deletePostMessage": "Пост и все ответы к нему будут удалены безвозвратно.",
+    "deletePostMessageFull": "Пост и все ответы будут удалены безвозвратно.",
+    "deleteReplyTitle": "Удалить ответ?",
+    "deleteReplyMessage": "Ответ будет удалён безвозвратно.",
+    "confirmDelete": "Подтвердите действие",
+    "confirmDeleteMsg": "Это действие необратимо.",
+    "optional": "(необязательно)",
+    "noCourse": "Без курса",
+    "loadingCourses": "Загрузка курсов...",
+    "noCompletedCourses": "Нет завершённых курсов",
+    "courseRating": "Оценка курса",
+    "reset": "сбросить",
+    "sending": "Отправка...",
+    "tagPlaceholder": "javascript, vue, python... (Enter чтобы добавить)",
+    "titlePlaceholder": "Введите заголовок поста...",
+    "bodyPlaceholder": "Напишите содержание поста...",
+    "saveError": "Не удалось сохранить оценку курса",
+    "genericError": "Произошла ошибка"
+  },
+  "header": {
+    "backToMain": "Вернуться в NetCourse",
+    "profile": "Профиль",
+    "logout": "Выйти",
+    "openMenu": "Открыть меню",
+    "avatar": "Аватар"
+  },
+  "footer": {
+    "description": "Сообщество разработчиков, студентов и энтузиастов IT. Обсуждаем технологии, делимся опытом и помогаем друг другу.",
+    "ruleBeKind": "// будь вежлив",
+    "ruleNoSpam": "// никакого спама",
+    "ruleShare": "// делись знаниями"
+  },
+  "auth": {
+    "loginPrompt": "// Введите свои учётные данные",
+    "loadingLogin": "Входим...",
+    "noAccount": "Нет аккаунта?",
+    "invalidCredentials": "Неверный email или пароль",
+    "registerPrompt": "Создайте аккаунт",
+    "registerLoading": "Регистрация...",
+    "alreadyHaveAccount": "Уже есть аккаунт?",
+    "registerSuccess": "Аккаунт создан! Перенаправляем...",
+    "registerError": "Ошибка регистрации",
+    "noToken": "Сервер не вернул токен авторизации",
+    "registerRedirect": "Регистрация успешна! Войдите в систему."
+  },
+  "profile": {
+    "loading": "$ загрузка профиля...",
+    "notFound": "// профиль не найден или удален",
+    "noBio": "// био пока не заполнено",
+    "since": "с {date}",
+    "posts": "постов",
+    "replies": "ответов",
+    "certificates": "сертификатов",
+    "issued": "Выдан: {date}",
+    "course": "Курс",
+    "records": "записей",
+    "noPosts": "// у вас пока нет постов",
+    "createFirstPost": "$ создать первый пост",
+    "noUserPosts": "// пользователь еще не создал публикаций",
+    "soonPosts": "$ echo \"скоро здесь появятся посты\""
+  },
+  "time": {
+    "justNow": "только что",
+    "minutesAgo": "{count} мин. назад",
+    "hoursAgo": "{count} ч. назад"
+  },
+  "toast": {
+    "success": "$ SUCCESS",
+    "error": "$ ERROR",
+    "info": "$ INFO"
+  },
+  "errors": {
+    "serverError": "Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.",
+    "unauthorized": "Сессия истекла. Пожалуйста, войдите снова.",
+    "forbidden": "Недостаточно прав для выполнения этого действия.",
+    "notFound": "Запрашиваемый ресурс не найден.",
+    "conflict": "Ресурс уже существует или возник конфликт данных.",
+    "validation": "Некорректные данные. Проверьте введённую информацию.",
+    "networkError": "Не удалось подключиться к серверу. Проверьте интернет-соединение.",
+    "timeout": "Сервер не отвечает. Попробуйте позже.",
+    "invalidResponse": "Некорректный ответ сервера.",
+    "loadPosts": "Не удалось загрузить посты",
+    "loadPost": "Не удалось загрузить пост",
+    "deletePost": "Не удалось удалить пост",
+    "loadReplies": "Не удалось загрузить ответы",
+    "submitReply": "Не удалось отправить ответ",
+    "updateReply": "Не удалось обновить ответ",
+    "deleteReply": "Не удалось удалить ответ",
+    "rateCourse": "Не удалось оценить курс",
+    "loadCourses": "Не удалось загрузить список курсов",
+    "default": "Произошла ошибка"
+  }
+}

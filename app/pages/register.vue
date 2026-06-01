@@ -14,7 +14,7 @@
       </div>
 
       <h1 class="text-2xl font-bold text-white font-mono mb-1">$ ./register.sh</h1>
-      <p class="text-slate-500 font-mono text-sm mb-8">// Создайте аккаунт</p>
+      <p class="text-slate-500 font-mono text-sm mb-8">{{ $t('auth.registerPrompt') }}</p>
 
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
@@ -43,12 +43,12 @@
         <button type="submit" :disabled="loading"
           class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
           <div v-if="loading" class="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
-          <span>{{ loading ? 'Регистрация...' : '$ create_account.sh' }}</span>
+          <span>{{ loading ? $t('auth.registerLoading') : '$ create_account.sh' }}</span>
         </button>
       </form>
 
       <p class="text-center text-slate-500 font-mono text-sm mt-6">
-        Уже есть аккаунт?
+        {{ $t('auth.alreadyHaveAccount') }}
         <NuxtLink to="/login" class="text-emerald-400 hover:underline ml-1">$ login</NuxtLink>
       </p>
     </div>
@@ -58,6 +58,7 @@
 <script setup>
 const { register } = useAuth()
 const { handleApiError } = useApi()
+const { $t } = useNuxtApp()
 
 const form = reactive({ username: '', email: '', password: '' })
 const loading = ref(false)
@@ -70,9 +71,9 @@ const handleRegister = async () => {
   successMsg.value = ''
   try {
     await register(form)
-    successMsg.value = 'Аккаунт создан! Перенаправляем...'
+    successMsg.value = $t('auth.registerSuccess')
   } catch (e) {
-    errorMsg.value = handleApiError(e, 'Ошибка регистрации')
+    errorMsg.value = handleApiError(e, $t('auth.registerError'))
   } finally {
     loading.value = false
   }

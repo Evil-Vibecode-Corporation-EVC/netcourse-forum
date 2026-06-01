@@ -2,6 +2,7 @@
 export const useApi = () => {
   const config = useRuntimeConfig()
   const router = useRouter()
+  const { $t } = useNuxtApp()
 
   const apiRequest = async (endpoint: string, options: any = {}) => {
     const url = `${config.public.apiBase}${endpoint}`
@@ -66,13 +67,13 @@ export const useApi = () => {
       if (error.message.includes('Failed to fetch') ||
           error.message.includes('NetworkError') ||
           error.message.includes('Network Error')) {
-        userMessage = 'Не удалось подключиться к серверу. Проверьте интернет-соединение.'
+        userMessage = $t('errors.networkError')
       }
       else if (error.message.includes('timeout')) {
-        userMessage = 'Сервер не отвечает. Попробуйте позже.'
+        userMessage = $t('errors.timeout')
       }
       else if (error.message.includes('Invalid JSON') || error.message.includes('HTTP Error')) {
-        userMessage = 'Некорректный ответ сервера.'
+        userMessage = $t('errors.invalidResponse')
       }
 
       throw new Error(userMessage)
@@ -204,32 +205,32 @@ export const useApi = () => {
   }
 
   // ============ УТИЛИТЫ ============
-  const handleApiError = (error: any, defaultMessage = 'Произошла ошибка') => {
+  const handleApiError = (error: any, defaultMessage = 'errors.default') => {
     console.error('API Error Handling:', error)
 
-    const message = error.message || defaultMessage
+    const message = error.message || $t(defaultMessage)
 
     if (message.includes('401') || message.includes('Unauthorized')) {
       authAPI.logout()
       if (process.client) {
         router.push('/login')
       }
-      return 'Сессия истекла. Пожалуйста, войдите снова.'
+      return $t('errors.unauthorized')
     }
     if (message.includes('403') || message.includes('Forbidden')) {
-      return 'Недостаточно прав для выполнения этого действия.'
+      return $t('errors.forbidden')
     }
     if (message.includes('404') || message.includes('Not Found')) {
-      return 'Запрашиваемый ресурс не найден.'
+      return $t('errors.notFound')
     }
     if (message.includes('409') || message.includes('Conflict')) {
-      return 'Ресурс уже существует или возник конфликт данных.'
+      return $t('errors.conflict')
     }
     if (message.includes('422') || message.includes('Validation')) {
-      return 'Некорректные данные. Проверьте введённую информацию.'
+      return $t('errors.validation')
     }
     if (message.includes('500') || message.includes('Server Error')) {
-      return 'Внутренняя ошибка сервера. Пожалуйста, попробуйте позже.'
+      return $t('errors.serverError')
     }
 
     return message
@@ -245,7 +246,7 @@ export const useApi = () => {
         value = value.trim()
 
         if (key === 'email' && !value.includes('@')) {
-          throw new Error('Некорректный email адрес')
+          throw new Error($t('errors.validation'))
         }
       }
 

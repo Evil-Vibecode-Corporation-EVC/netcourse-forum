@@ -28,8 +28,37 @@
             <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-8H9v8H5a2 2 0 0 1-2-2z"/>
             <polyline points="9 22 9 12 15 12 15 22"/>
           </svg>
-          <span class="text-slate-300 text-sm font-mono">Вернуться в NetCourse</span>
-        </button>
+            <span class="text-slate-300 text-sm font-mono">{{ $t('header.backToMain') }}</span>
+          </button>
+
+          <!-- Locale Switcher -->
+          <div class="flex items-center gap-1">
+            <button
+                :class="[
+                    'px-2 py-1 text-xs font-mono rounded transition-colors',
+                    $locale === 'ru'
+                        ? 'text-emerald-400 bg-emerald-500/10'
+                        : 'text-slate-500 hover:text-slate-300'
+                ]"
+                @click="$setLocale('ru')"
+            >
+                RU
+            </button>
+
+            <span class="text-slate-600 text-xs">|</span>
+
+            <button
+                :class="[
+                    'px-2 py-1 text-xs font-mono rounded transition-colors',
+                    $locale === 'kz'
+                        ? 'text-emerald-400 bg-emerald-500/10'
+                        : 'text-slate-500 hover:text-slate-300'
+                ]"
+                @click="$setLocale('kz')"
+            >
+                KZ
+            </button>
+        </div>
 
         <div v-if="isAuthenticated" class="flex items-center gap-4">
           <div class="relative">
@@ -41,7 +70,7 @@
                 <img 
                   v-if="currentUser?.avatarUrl"
                   :src="currentUser.avatarUrl" 
-                  alt="Аватар"
+                  :alt="$t('header.avatar')"
                   class="w-full h-full object-cover"
                 />
                 <span v-else class="text-sm text-emerald-500 font-mono font-bold">
@@ -71,7 +100,7 @@
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
                     <circle cx="12" cy="7" r="4"/>
                   </svg>
-                  Профиль
+                  {{ $t('header.profile') }}
                 </button>
                 <button
                   @click="handleLogout"
@@ -82,7 +111,7 @@
                     <polyline points="16 17 21 12 16 7"/>
                     <line x1="21" y1="12" x2="9" y2="12"/>
                   </svg>
-                  Выйти
+                  {{ $t('header.logout') }}
                 </button>
               </div>
             </Transition>
@@ -102,7 +131,7 @@
       <button
         class="md:hidden flex flex-col items-center justify-center w-8 h-8 relative"
         @click="toggleMobileMenu"
-        aria-label="Открыть меню"
+        :aria-label="$t('header.openMenu')"
       >
         <span 
           :class="[
@@ -148,16 +177,42 @@
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2h-5v-8H9v8H5a2 2 0 0 1-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
-            <span class="text-slate-300 font-mono text-base">Вернуться в NetCourse</span>
+            <span class="text-slate-300 font-mono text-base">{{ $t('header.backToMain') }}</span>
           </button>
+          <div class="flex justify-center gap-3 pt-2 pb-2">
+            <button
+              :class="[
+                'px-3 py-1 text-sm font-mono rounded transition-colors',
+                $locale === 'ru'
+                  ? 'text-emerald-400 bg-emerald-500/10'
+                  : 'text-slate-500 hover:text-slate-300'
+              ]"
+              @click="$setLocale('ru')"
+            >
+              RU
+            </button>
 
+            <span class="text-slate-600">|</span>
+
+            <button
+              :class="[
+                'px-3 py-1 text-sm font-mono rounded transition-colors',
+                $locale === 'kz'
+                  ? 'text-emerald-400 bg-emerald-500/10'
+                  : 'text-slate-500 hover:text-slate-300'
+              ]"
+              @click="$setLocale('kz')"
+            >
+              KZ
+            </button>
+          </div>
           <div v-if="isAuthenticated" class="flex flex-col gap-3 pt-4 border-t border-emerald-500/20">
             <div class="flex items-center justify-center gap-3 py-2">
               <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center overflow-hidden">
                 <img 
                   v-if="currentUser?.avatarUrl"
                   :src="currentUser.avatarUrl" 
-                  alt="Аватар"
+                  :alt="$t('header.avatar')"
                   class="w-full h-full object-cover"
                 />
                 <span v-else class="text-lg text-emerald-500 font-mono font-bold">

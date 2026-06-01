@@ -14,7 +14,7 @@
       </div>
 
       <h1 class="text-2xl font-bold text-white font-mono mb-1">$ sudo login</h1>
-      <p class="text-slate-500 font-mono text-sm mb-8">// Введите свои учётные данные</p>
+      <p class="text-slate-500 font-mono text-sm mb-8">{{ $t('auth.loginPrompt') }}</p>
 
       <form @submit.prevent="handleLogin" class="space-y-4">
         <div>
@@ -35,12 +35,12 @@
         <button type="submit" :disabled="loading"
           class="w-full py-3 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-mono font-bold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2">
           <div v-if="loading" class="w-4 h-4 border-2 border-slate-950 border-t-transparent rounded-full animate-spin"></div>
-          <span>{{ loading ? 'Входим...' : '$ ./login.sh' }}</span>
+          <span>{{ loading ? $t('auth.loadingLogin') : '$ ./login.sh' }}</span>
         </button>
       </form>
 
       <p class="text-center text-slate-500 font-mono text-sm mt-6">
-        Нет аккаунта?
+        {{ $t('auth.noAccount') }}
         <NuxtLink to="/register" class="text-emerald-400 hover:underline ml-1">$ register</NuxtLink>
       </p>
     </div>
@@ -50,6 +50,7 @@
 <script setup>
 const { login } = useAuth()
 const { handleApiError } = useApi()
+const { $t } = useNuxtApp()
 
 const form = reactive({ email: '', password: '' })
 const loading = ref(false)
@@ -61,7 +62,7 @@ const handleLogin = async () => {
   try {
     await login(form)
   } catch (e) {
-    errorMsg.value = handleApiError(e, 'Неверный email или пароль')
+    errorMsg.value = handleApiError(e, $t('auth.invalidCredentials'))
   } finally {
     loading.value = false
   }

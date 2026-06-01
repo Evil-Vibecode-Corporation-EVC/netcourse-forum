@@ -15,6 +15,7 @@ export interface User {
 export const useAuth = () => {
   const router = useRouter()
   const { authAPI, handleApiError, sanitizeData, apiRequest } = useApi() // добавили apiRequest
+  const { $t } = useNuxtApp()
   
   const user = useState<User | null>('auth:user', () => null)
   const token = useState<string | null>('auth:token', () => null)
@@ -52,7 +53,7 @@ export const useAuth = () => {
       let userData = response.user || response
 
       if (!authToken) {
-        throw new Error('Сервер не вернул токен авторизации')
+        throw new Error($t('auth.noToken'))
       }
 
       if (!userData || !userData.email) {
@@ -112,7 +113,7 @@ export const useAuth = () => {
         await navigateTo({
           path: '/login',
           query: {
-            message: 'Регистрация успешна! Войдите в систему.'
+            message: $t('auth.registerRedirect')
           }
         })
       }

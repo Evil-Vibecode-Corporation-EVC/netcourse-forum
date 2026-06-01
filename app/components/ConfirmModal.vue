@@ -14,8 +14,8 @@
           <div class="w-12 h-12 rounded-full bg-red-500/10 border border-red-500/30 flex items-center justify-center mx-auto mb-4">
             <svg class="w-6 h-6 text-red-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
           </div>
-          <h3 class="text-white font-mono font-bold text-center mb-2">{{ title || 'Подтвердите действие' }}</h3>
-          <p class="text-slate-400 font-mono text-sm text-center mb-6">{{ message || 'Это действие необратимо.' }}</p>
+          <h3 class="text-white font-mono font-bold text-center mb-2">{{ title || $t('modal.confirmDelete') }}</h3>
+          <p class="text-slate-400 font-mono text-sm text-center mb-6">{{ message || $t('modal.confirmDeleteMsg') }}</p>
           <div class="flex gap-3">
             <button @click="$emit('confirm')" class="flex-1 py-2.5 bg-red-500/10 border border-red-500/30 hover:bg-red-500/20 text-red-400 font-mono text-sm rounded-xl transition-all">
               $ confirm

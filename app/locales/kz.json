@@ -94,6 +94,8 @@
     "loadingLogin": "Кіру...",
     "noAccount": "Аккаунт жоқ па?",
     "invalidCredentials": "Қате email немесе құпия сөз",
+    "turnstileRequired": "Робот емес екеніңізді растаңыз",
+    "turnstileError": "Turnstile тексеруі өтпеді. Қайталап көріңіз.",
     "registerPrompt": "Аккаунт жасау",
     "registerLoading": "Тіркелу...",
     "alreadyHaveAccount": "Аккаунтыңыз бар ма?",

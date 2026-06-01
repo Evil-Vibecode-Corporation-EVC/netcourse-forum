@@ -94,6 +94,8 @@
     "loadingLogin": "Входим...",
     "noAccount": "Нет аккаунта?",
     "invalidCredentials": "Неверный email или пароль",
+    "turnstileRequired": "Подтвердите, что вы не робот",
+    "turnstileError": "Не удалось проверить Turnstile. Повторите попытку.",
     "registerPrompt": "Создайте аккаунт",
     "registerLoading": "Регистрация...",
     "alreadyHaveAccount": "Уже есть аккаунт?",

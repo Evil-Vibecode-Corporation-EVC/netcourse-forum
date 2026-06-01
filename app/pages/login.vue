@@ -28,6 +28,11 @@
             class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all" />
         </div>
 
+        <div class="pt-1">
+          <div class="cf-turnstile" :data-sitekey="siteKey" data-callback="onTurnstileSuccess"
+            data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
+        </div>
+
         <div v-if="errorMsg" class="px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-sm">
           ✗ {{ errorMsg }}
         </div>
@@ -48,21 +53,60 @@
 </template>
 
 <script setup>
+useHead({
+  script: [
+    {
+      src: 'https://challenges.cloudflare.com/turnstile/v0/api.js',
+      async: true,
+      defer: true
+    }
+  ]
+})
+
 const { login } = useAuth()
 const { handleApiError } = useApi()
 const { $t } = useNuxtApp()
+const runtimeConfig = useRuntimeConfig()
 
 const form = reactive({ email: '', password: '' })
 const loading = ref(false)
 const errorMsg = ref('')
+const turnstileToken = ref('')
+const siteKey = runtimeConfig.public.turnstileSiteKey || '0x4AAAAAADc0xYww_LmgQeEr'
+
+const resetTurnstile = () => {
+  if (process.client && window.turnstile?.reset) {
+    window.turnstile.reset()
+  }
+  turnstileToken.value = ''
+}
+
+onMounted(() => {
+  if (!process.client) return
+  window.onTurnstileSuccess = (token) => {
+    turnstileToken.value = token
+  }
+  window.onTurnstileExpired = () => {
+    resetTurnstile()
+  }
+  window.onTurnstileError = () => {
+    resetTurnstile()
+    errorMsg.value = $t('auth.turnstileError')
+  }
+})
 
 const handleLogin = async () => {
+  if (!turnstileToken.value) {
+    errorMsg.value = $t('auth.turnstileRequired')
+    return
+  }
   loading.value = true
   errorMsg.value = ''
   try {
-    await login(form)
+    await login({ ...form, turnstileToken: turnstileToken.value })
   } catch (e) {
     errorMsg.value = handleApiError(e, $t('auth.invalidCredentials'))
+    resetTurnstile()
   } finally {
     loading.value = false
   }

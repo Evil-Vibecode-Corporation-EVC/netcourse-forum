@@ -107,23 +107,41 @@
               <div v-if="form.courseId && isAuthenticated" class="p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
                 <span class="block text-slate-400 font-mono text-xs mb-2">{{ $t('modal.courseRating') }}</span>
                 <div class="flex items-center gap-1">
-                  <svg
+                  <button
                     v-for="n in 5"
                     :key="n"
-                    class="w-6 h-6 cursor-pointer transition-all hover:scale-110"
-                    :class="n <= (form.rating || 0) ? 'text-amber-400' : 'text-slate-600 hover:text-amber-400/50'"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
+                    type="button"
+                    class="group/star relative"
                     @click="form.rating = n"
+                    @mouseenter="hoveredRating = n"
+                    @mouseleave="hoveredRating = 0"
                   >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                  </svg>
+                    <svg
+                      class="w-7 h-7 transition-all duration-150"
+                      :class="[
+                        n <= activeStar
+                          ? 'text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]'
+                          : 'text-slate-600',
+                        'hover:scale-110'
+                      ]"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                    <span
+                      class="absolute -top-7 left-1/2 -translate-x-1/2 bg-slate-800 border border-slate-700 text-white font-mono text-xs px-2 py-0.5 rounded opacity-0 group-hover/star:opacity-100 transition-opacity pointer-events-none whitespace-nowrap"
+                    >
+                      {{ n }} / 5
+                    </span>
+                  </button>
+                  <span class="text-slate-500 font-mono text-xs ml-2">{{ form.rating ? `${form.rating} / 5` : '' }}</span>
                   <button
                     v-if="form.rating"
-                    class="ml-2 text-xs text-slate-500 hover:text-red-400 font-mono"
+                    class="ml-1 text-xs text-slate-500 hover:text-red-400 font-mono transition-colors"
                     @click="form.rating = null"
                   >
-                    {{ $t('modal.reset') }}
+                    ✕
                   </button>
                 </div>
               </div>
@@ -230,8 +248,11 @@ const errorMsg = ref('')
 const selectedFiles = ref<File[]>([])
 const uploadError = ref('')
 const fileInput = ref<HTMLInputElement | null>(null)
+const hoveredRating = ref(0)
 
-const suggestedTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'typescript', 'backend', 'frontend', 'css', 'api', 'sql', 'devops']
+const activeStar = computed(() => hoveredRating.value || form.rating || 0)
+
+const suggestedTags = ['сети', 'tcp-ip', 'osi', 'vlan', 'vpn', 'кибербезопасность', 'python', 'bash', 'linux', 'cisco', 'маршрутизация', 'pentest']
 
 // Теги
 const addTag = () => {

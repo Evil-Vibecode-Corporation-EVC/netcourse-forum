@@ -67,9 +67,9 @@
               </div>
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#popular</span>
             </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">JavaScript</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.javascript') }}</p>
-            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>124 темы</span><span>1.2k ответов</span></div>
+            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Компьютерные сети</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">OSI, TCP/IP, маршрутизация, коммутация, VLAN, VPN, NAT, протоколы и инфраструктура сетей.</p>
+            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>87 тем</span><span>943 ответов</span></div>
           </div>
 
           <div class="group bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl p-6 transition-all hover:-translate-y-1 duration-300">
@@ -79,9 +79,9 @@
               </div>
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#trending</span>
             </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Backend Development</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.backend') }}</p>
-            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>89 тем</span><span>845 ответов</span></div>
+            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Кибербезопасность</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">Pentest, CTF, анализ угроз, шифрование, Firewall, IDS/IPS, безопасность сетей и веб-приложений.</p>
+            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>124 темы</span><span>1.8k ответов</span></div>
           </div>
 
           <div class="group bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl p-6 transition-all hover:-translate-y-1 duration-300">
@@ -91,14 +91,14 @@
               </div>
               <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#new</span>
             </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Frontend & UI/UX</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">{{ $t('forum.categoryDescription.frontend') }}</p>
+            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Программирование</h3>
+            <p class="text-slate-400 text-sm leading-relaxed mb-4">Python, Go, Bash, автоматизация, сетевые API, парсинг, скриптинг и разработка сетевых инструментов.</p>
             <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>156 тем</span><span>2.1k ответов</span></div>
           </div>
         </div>
       </section>
 
-      <!-- Категории и теги -->
+      <!-- Популярные теги -->
       <section class="mb-16">
         <div class="flex items-center gap-3 mb-6">
           <div class="flex gap-1">
@@ -106,55 +106,29 @@
             <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
             <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
           </div>
-          <span class="text-slate-400 font-mono text-sm">categories & tags</span>
+          <span class="text-slate-400 font-mono text-sm">popular_tags</span>
         </div>
 
         <div class="bg-slate-900/50 border border-emerald-500/20 rounded-xl p-6">
-          <div class="mb-6">
-            <div class="text-slate-400 font-mono text-xs mb-3 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-              categories
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="cat in categories"
-                :key="cat"
-                @click="filterByTag(cat)"
-                class="px-3 py-1.5 bg-slate-800 border rounded-lg font-mono text-sm transition-all"
-                :class="activeTag === cat
-                  ? 'border-emerald-500/60 text-emerald-400 bg-emerald-500/10'
-                  : 'border-slate-700 text-slate-300 hover:border-emerald-500/40 hover:text-emerald-400'"
-              >
-                #{{ cat }}
-              </button>
-            </div>
-          </div>
-
-          <div>
-            <div class="text-slate-400 font-mono text-xs mb-3 flex items-center gap-2">
-              <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-              popular tags
-            </div>
-            <div class="flex flex-wrap gap-2">
-              <button
-                v-for="tag in popularTags"
-                :key="tag"
-                @click="filterByTag(tag)"
-                class="px-2.5 py-1 border rounded-lg font-mono text-xs transition-all"
-                :class="activeTag === tag
-                  ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
-                  : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20'"
-              >
-                #{{ tag }}
-              </button>
-              <button
-                v-if="activeTag"
-                @click="activeTag = ''"
-                class="px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 font-mono text-xs hover:bg-red-500/20 transition-all"
-              >
-                ✕ {{ $t('forum.home.reset') }}
-              </button>
-            </div>
+          <div class="flex flex-wrap gap-2">
+            <button
+              v-for="tag in popularTags"
+              :key="tag"
+              @click="filterByTag(tag)"
+              class="px-2.5 py-1 border rounded-lg font-mono text-xs transition-all"
+              :class="activeTag === tag
+                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                : 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400 hover:bg-emerald-500/20'"
+            >
+              #{{ tag }}
+            </button>
+            <button
+              v-if="activeTag"
+              @click="activeTag = ''"
+              class="px-2.5 py-1 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 font-mono text-xs hover:bg-red-500/20 transition-all"
+            >
+              ✕ {{ $t('forum.home.reset') }}
+            </button>
           </div>
         </div>
       </section>
@@ -337,8 +311,7 @@ const showDeleteModal = ref(false)
 const editTarget = ref(null)
 const deleteTarget = ref(null)
 
-const categories = ['программирование', 'веб-разработка', 'мобильная-разработка', 'devops', 'базы-данных']
-const popularTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'tailwind', 'typescript', 'api']
+const popularTags = ['сети', 'tcp-ip', 'osi', 'vlan', 'vpn', 'кибербезопасность', 'python', 'bash', 'linux', 'cisco', 'маршрутизация', 'pentest']
 
 const filterByTag = (tag) => {
   activeTag.value = activeTag.value === tag ? '' : tag

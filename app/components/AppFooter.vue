@@ -6,7 +6,7 @@
         <!-- Описание -->
         <div>
           <div class="flex items-center mb-3">
-            <span class="text-white">Course/Forum</span><span class="text-xl font-bold font-mono text-emerald-500">Net<span class="text-white">Course/Forum</span></span>
+            <span class="text-xl font-bold font-mono text-emerald-500">Net<span class="text-white">Course/Forum</span></span>
           </div>
           <p class="text-slate-300 leading-relaxed font-mono text-sm max-w-md">
             {{ $t('footer.description') }}
@@ -25,7 +25,7 @@
 
       <div class="mt-8 pt-6 border-t border-slate-700 text-center">
         <p class="text-slate-500 text-xs font-mono">
-          © 2026 NetCourse/Forum <span class="text-emerald-500">// powered by EVC </span>
+          © 2026 NetCourse/Forum 
         </p>
       </div>
     </div>

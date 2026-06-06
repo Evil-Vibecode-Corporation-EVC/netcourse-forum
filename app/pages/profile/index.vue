@@ -27,13 +27,6 @@
               <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
             </div>
             <span class="text-slate-500 font-mono text-xs ml-2">$ whoami --my-profile</span>
-            <div class="ml-auto flex items-center gap-2">
-              <span class="relative flex h-2 w-2">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span class="text-emerald-400/70 font-mono text-xs">online</span>
-            </div>
           </div>
 
           <div class="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
@@ -63,24 +56,15 @@
             <div class="flex-1 text-center lg:text-left">
               <div class="mb-4">
                 <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent font-mono mb-1">{{ userData.username }}</h1>
-                <p class="text-emerald-400 font-mono text-sm tracking-wide">{{ userData.email }}</p>
               </div>
 
               <p v-if="userData.bio" class="text-slate-300 text-sm leading-relaxed mb-6 max-w-xl mx-auto lg:mx-0 italic border-l-2 border-emerald-500/30 pl-4">“{{ userData.bio }}”</p>
               <p v-else class="text-slate-500 text-sm italic mb-6">{{ $t('profile.noBio') }}</p>
 
-              <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-xs font-mono text-slate-500">
-                <div v-if="userData.createdAt" class="flex items-center gap-1.5">
+              <div v-if="userData.createdAt" class="flex justify-center lg:justify-start text-xs font-mono text-slate-500">
+                <div class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <span>{{ $t('profile.since', { date: formatDate(userData.createdAt) }) }}</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  <span>ID: {{ userData.id }}</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
-                  <span>{{ userData.role || 'USER' }}</span>
                 </div>
               </div>
             </div>
@@ -196,7 +180,11 @@ const myPosts = ref([])
 
 const formatDate = (dateStr) => {
   if (!dateStr) return '—'
-  return new Date(dateStr).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })
+  try {
+    return new Date(dateStr).toLocaleDateString('ru-RU', { day: 'numeric', month: 'short', year: 'numeric' })
+  } catch {
+    return '—'
+  }
 }
 
 const loadProfile = async () => {

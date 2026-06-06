@@ -48,13 +48,6 @@
               <div class="w-3 h-3 rounded-full bg-green-500/80"></div>
             </div>
             <span class="text-slate-500 font-mono text-xs ml-2">$ whoami --profile</span>
-            <div class="ml-auto flex items-center gap-2">
-              <span class="relative flex h-2 w-2">
-                <span class="absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              <span class="text-emerald-400/70 font-mono text-xs">online</span>
-            </div>
           </div>
 
           <div class="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
@@ -122,14 +115,10 @@
                 </div>
               </div>
 
-              <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-xs font-mono text-slate-500">
-                <div v-if="profile.createdAt" class="flex items-center gap-1.5">
+              <div v-if="profile.createdAt" class="flex justify-center lg:justify-start text-xs font-mono text-slate-500">
+                <div class="flex items-center gap-1.5">
                   <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                   <span>{{ $t('profile.since', { date: formatDate(profile.createdAt) }) }}</span>
-                </div>
-                <div class="flex items-center gap-1.5">
-                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                  <span>ID: {{ route.params.id }}</span>
                 </div>
               </div>
             </div>

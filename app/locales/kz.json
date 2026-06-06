@@ -74,7 +74,10 @@
     "titlePlaceholder": "Жазба тақырыбын енгізіңіз...",
     "bodyPlaceholder": "Жазба мазмұнын жазыңыз...",
     "saveError": "Курс бағасын сақтау мүмкін болмады",
-    "genericError": "Қате орын алды"
+    "genericError": "Қате орын алды",
+    "attachFiles": "Файлдарды таңдаңыз (суреттер, PDF, DOCX)",
+    "uploadError": "Файлды жүктеу мүмкін болмады",
+    "deleteError": "Тіркемені жою мүмкін болмады"
   },
   "header": {
     "backToMain": "NetCourse-ке оралу",

@@ -128,6 +128,50 @@
                 </div>
               </div>
 
+              <!-- Вложения -->
+              <div>
+                <label class="block text-slate-400 font-mono text-xs mb-1.5">// attachments <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
+                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl p-3 transition-all">
+                  <!-- Существующие вложения (при редактировании) -->
+                  <div v-if="isEdit && editPost?.attachments?.length" class="flex flex-wrap gap-2 mb-3">
+                    <div
+                      v-for="att in editPost.attachments"
+                      :key="att.id"
+                      class="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 border border-slate-600 rounded-lg"
+                    >
+                      <span v-if="att.mimeType?.startsWith('image/')" class="text-emerald-400 text-xs">🖼</span>
+                      <span v-else class="text-slate-400 text-xs">📎</span>
+                      <a :href="att.r2Key" target="_blank" class="text-slate-300 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px]">{{ att.fileName }}</a>
+                      <button
+                        type="button"
+                        @click="deleteExistingAttachment(att.id)"
+                        class="text-slate-500 hover:text-red-400 text-xs leading-none transition-colors"
+                      >×</button>
+                    </div>
+                  </div>
+                  <div
+                    class="flex items-center gap-2 cursor-pointer"
+                    @click="$refs.fileInput.click()"
+                  >
+                    <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                    </svg>
+                    <span class="text-slate-400 font-mono text-xs">{{ selectedFiles.length ? selectedFiles.map(f => f.name).join(', ') : $t('modal.attachFiles') }}</span>
+                  </div>
+                  <input
+                    ref="fileInput"
+                    type="file"
+                    multiple
+                    accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                    class="hidden"
+                    @change="onFilesSelected"
+                  />
+                </div>
+                <div v-if="uploadError" class="mt-2 px-3 py-2 bg-red-500/10 border border-red-500/30 rounded-lg text-red-400 font-mono text-xs">
+                  ✗ {{ uploadError }}
+                </div>
+              </div>
+
               <div v-if="errorMsg" class="px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-sm">
                 ✗ {{ errorMsg }}
               </div>
@@ -168,7 +212,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'submitted'])
 
-const { forumAPI, courseAPI, apiRequest } = useApi()
+const { forumAPI, forumAttachmentAPI, courseAPI, apiRequest } = useApi()
 const { user, isAuthenticated } = useAuth()
 const { error: showError } = useToast()
 
@@ -183,6 +227,9 @@ const form = reactive({
 const tagInput = ref('')
 const loading = ref(false)
 const errorMsg = ref('')
+const selectedFiles = ref<File[]>([])
+const uploadError = ref('')
+const fileInput = ref<HTMLInputElement | null>(null)
 
 const suggestedTags = ['javascript', 'vue', 'react', 'python', 'nodejs', 'typescript', 'backend', 'frontend', 'css', 'api', 'sql', 'devops']
 
@@ -273,7 +320,10 @@ watch(() => props.editPost, (post) => {
 watch(() => props.modelValue, (val) => {
   if (!val) {
     errorMsg.value = ''
+    uploadError.value = ''
     tagInput.value = ''
+    selectedFiles.value = []
+    if (fileInput.value) fileInput.value.value = ''
     if (!props.editPost) {
       form.title = ''
       form.body = ''
@@ -284,10 +334,30 @@ watch(() => props.modelValue, (val) => {
   }
 })
 
+const onFilesSelected = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  if (input.files) {
+    selectedFiles.value = Array.from(input.files)
+  }
+}
+
+const deleteExistingAttachment = async (attachmentId: number) => {
+  if (!props.editPost) return
+  try {
+    await forumAttachmentAPI.deletePost(props.editPost.id, attachmentId)
+    if (props.editPost.attachments) {
+      props.editPost.attachments = props.editPost.attachments.filter((a: any) => a.id !== attachmentId)
+    }
+  } catch (e: any) {
+    showError(e.message || $t('modal.deleteError'))
+  }
+}
+
 // Отправка формы
 const handleSubmit = async () => {
   loading.value = true
   errorMsg.value = ''
+  uploadError.value = ''
   try {
     let result
     const payload = {
@@ -301,6 +371,20 @@ const handleSubmit = async () => {
       result = await forumAPI.updatePost(props.editPost.id, payload)
     } else {
       result = await forumAPI.createPost(payload)
+    }
+
+    // Загрузка вложений
+    if (selectedFiles.value.length) {
+      const postId = result.id
+      for (const file of selectedFiles.value) {
+        try {
+          const att = await forumAttachmentAPI.uploadPost(postId, file)
+          if (!result.attachments) result.attachments = []
+          result.attachments.push(att)
+        } catch (e: any) {
+          uploadError.value = e.message || $t('modal.uploadError')
+        }
+      }
     }
 
     // Отправка оценки курса, если выбран курс и поставлена оценка

@@ -61,6 +61,28 @@
             {{ post.body }}
           </div>
 
+          <!-- Вложения поста -->
+          <div v-if="post.attachments?.length" class="flex flex-wrap gap-2 mb-5">
+            <div
+              v-for="att in post.attachments"
+              :key="att.id"
+              class="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg group hover:border-slate-600 transition-all"
+            >
+              <template v-if="att.mimeType?.startsWith('image/')">
+                <a :href="att.r2Key" target="_blank" class="flex items-center gap-2">
+                  <div class="w-8 h-8 rounded overflow-hidden shrink-0">
+                    <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
+                  </div>
+                  <span class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[150px] transition-colors">{{ att.fileName }}</span>
+                </a>
+              </template>
+              <template v-else>
+                <span class="text-slate-500 text-xs">📎</span>
+                <a :href="att.r2Key" target="_blank" class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[200px] transition-colors">{{ att.fileName }}</a>
+              </template>
+            </div>
+          </div>
+
           <div
             v-if="post.courseId && course"
             class="mb-8 p-6 rounded-2xl border border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm"
@@ -174,6 +196,29 @@
               :placeholder="$t('forum.post.replyPlaceholder')"
               class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/50 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none mb-3"
             ></textarea>
+
+            <!-- Прикрепление файлов к ответу -->
+            <div class="flex items-center gap-3 mb-3">
+              <button
+                type="button"
+                @click="replyFileInput?.click()"
+                class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 font-mono text-xs rounded-lg transition-all"
+              >
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+                </svg>
+                <span>{{ replyFiles.length ? replyFiles.map(f => f.name).join(', ') : '$ attach' }}</span>
+              </button>
+              <input
+                ref="replyFileInput"
+                type="file"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                class="hidden"
+                @change="onReplyFilesSelected"
+              />
+            </div>
+
             <div class="flex justify-end">
               <button
                 @click="submitReply"
@@ -219,6 +264,26 @@
 
                   <div v-if="editingReplyId !== reply.id">
                     <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap">{{ reply.body }}</p>
+                    <div v-if="reply.attachments?.length" class="flex flex-wrap gap-2 mt-3">
+                      <div
+                        v-for="att in reply.attachments"
+                        :key="att.id"
+                        class="flex items-center gap-2 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg"
+                      >
+                        <template v-if="att.mimeType?.startsWith('image/')">
+                          <a :href="att.r2Key" target="_blank" class="flex items-center gap-1">
+                            <div class="w-6 h-6 rounded overflow-hidden shrink-0">
+                              <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
+                            </div>
+                            <span class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px] transition-colors">{{ att.fileName }}</span>
+                          </a>
+                        </template>
+                        <template v-else>
+                          <span class="text-slate-500 text-xs">📎</span>
+                          <a :href="att.r2Key" target="_blank" class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[150px] transition-colors">{{ att.fileName }}</a>
+                        </template>
+                      </div>
+                    </div>
                     <div class="mt-3">
                       <button
                         @click="toggleReplyLike(reply)"
@@ -296,7 +361,7 @@ import { computed } from 'vue'
 const route = useRoute()
 const router = useRouter()
 const { isAuthenticated, user, initialize } = useAuth()
-const { forumAPI, apiRequest, handleApiError } = useApi()
+const { forumAPI, forumAttachmentAPI, apiRequest, handleApiError } = useApi()
 const { toasts, success, error: showError, remove: removeToast } = useToast()
 const { $t } = useNuxtApp()
 
@@ -310,6 +375,8 @@ const replyMeta = ref({ page: 1, totalPages: 1, total: 0 })
 
 const replyBody = ref('')
 const replyLoading = ref(false)
+const replyFiles = ref<File[]>([])
+const replyFileInput = ref<HTMLInputElement | null>(null)
 
 const editingReplyId = ref(null)
 const editReplyBody = ref('')
@@ -461,14 +528,37 @@ const submitReply = async () => {
   replyLoading.value = true
   try {
     const created = await forumAPI.createReply(postId.value, replyBody.value.trim())
+
+    // Загрузка вложений к ответу
+    if (replyFiles.value.length) {
+      created.attachments = []
+      for (const file of replyFiles.value) {
+        try {
+          const att = await forumAttachmentAPI.uploadReply(postId.value, created.id, file)
+          created.attachments.push(att)
+        } catch (e: any) {
+          showError(e.message || 'Failed to upload attachment')
+        }
+      }
+    }
+
     replies.value.push(created)
     replyMeta.value.total++
     replyBody.value = ''
+    replyFiles.value = []
+    if (replyFileInput.value) replyFileInput.value.value = ''
     success($t('forum.notifications.replyPublished'))
   } catch (e) {
     showError(handleApiError(e, $t('errors.submitReply')))
   } finally {
     replyLoading.value = false
+  }
+}
+
+const onReplyFilesSelected = (e: Event) => {
+  const input = e.target as HTMLInputElement
+  if (input.files) {
+    replyFiles.value = Array.from(input.files)
   }
 }
 

@@ -102,6 +102,13 @@
         {{ post.replies?.length || 0 }} replies
       </span>
 
+      <span v-if="post.attachments?.length" class="flex items-center gap-1 text-slate-500">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
+        </svg>
+        <span class="font-mono text-xs">{{ post.attachments.length }}</span>
+      </span>
+
       <!-- Лайки -->
       <button
         class="flex items-center gap-1.5 transition-all group/like"

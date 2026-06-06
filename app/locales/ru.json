@@ -74,7 +74,10 @@
     "titlePlaceholder": "Введите заголовок поста...",
     "bodyPlaceholder": "Напишите содержание поста...",
     "saveError": "Не удалось сохранить оценку курса",
-    "genericError": "Произошла ошибка"
+    "genericError": "Произошла ошибка",
+    "attachFiles": "Выберите файлы (изображения, PDF, DOCX)",
+    "uploadError": "Не удалось загрузить файл",
+    "deleteError": "Не удалось удалить вложение"
   },
   "header": {
     "backToMain": "Вернуться в NetCourse",

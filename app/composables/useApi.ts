@@ -121,6 +121,53 @@ export const useApi = () => {
     unlikeReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}/likes`, { method: 'DELETE' }),
   }
 
+  // ============ ВЛОЖЕНИЯ ФОРУМА ============
+  const uploadFileRequest = async (endpoint: string, method: string, formData: FormData) => {
+    const url = `${config.public.apiBase}${endpoint}`
+    const headers: Record<string, string> = {}
+
+    if (process.client) {
+      const token = localStorage.getItem('authToken')
+      if (token) {
+        headers.Authorization = `Bearer ${token}`
+      }
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers,
+      body: formData,
+    })
+
+    if (!response.ok) {
+      let errorMessage = `HTTP Error: ${response.status}`
+      try {
+        const data = await response.json()
+        errorMessage = data.message || data.error || errorMessage
+      } catch {}
+      throw new Error(errorMessage)
+    }
+
+    return response.json()
+  }
+
+  const forumAttachmentAPI = {
+    uploadPost: (postId: number, file: File) => {
+      const fd = new FormData()
+      fd.append('attachment', file)
+      return uploadFileRequest(`/forum/posts/${postId}/attachments`, 'POST', fd)
+    },
+    deletePost: (postId: number, attachmentId: number) =>
+      apiRequest(`/forum/posts/${postId}/attachments/${attachmentId}`, { method: 'DELETE' }),
+    uploadReply: (postId: number, replyId: number, file: File) => {
+      const fd = new FormData()
+      fd.append('attachment', file)
+      return uploadFileRequest(`/forum/posts/${postId}/replies/${replyId}/attachments`, 'POST', fd)
+    },
+    deleteReply: (postId: number, replyId: number, attachmentId: number) =>
+      apiRequest(`/forum/posts/${postId}/replies/${replyId}/attachments/${attachmentId}`, { method: 'DELETE' }),
+  }
+
   // ============ ПРОФИЛИ (публичные) ============
   const profileAPI = {
     // Получить публичный профиль по ID
@@ -261,6 +308,7 @@ export const useApi = () => {
   return {
     apiRequest,
     forumAPI,
+    forumAttachmentAPI,
     profileAPI,
     courseAPI,      // <-- добавлено
     authAPI,

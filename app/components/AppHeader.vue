@@ -312,7 +312,7 @@ const handleLogout = async () => {
 }
 
 const handleLogoutMobile = async () => {
-  window.location.href = 'https://netcourse.tech'
+  await logout()
   closeMobileMenu()
   closeProfileMenu()
 }

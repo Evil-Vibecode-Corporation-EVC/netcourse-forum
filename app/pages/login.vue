@@ -28,7 +28,7 @@
             class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all" />
         </div>
 
-        <div class="pt-1">
+        <div class="pt-1 flex justify-center overflow-hidden">
           <div class="cf-turnstile" :data-sitekey="siteKey" data-callback="onTurnstileSuccess"
             data-expired-callback="onTurnstileExpired" data-error-callback="onTurnstileError"></div>
         </div>
@@ -112,3 +112,15 @@ const handleLogin = async () => {
   }
 }
 </script>
+
+<style>
+.cf-turnstile {
+  transform: scale(1);
+  transform-origin: center;
+}
+@media (max-width: 480px) {
+  .cf-turnstile {
+    transform: scale(0.82);
+  }
+}
+</style>

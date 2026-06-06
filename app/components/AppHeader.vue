@@ -270,7 +270,7 @@
   </Transition>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { useRoute, navigateTo } from '#app'
 import { useAuth } from '~/composables/useAuth'

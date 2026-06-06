@@ -281,7 +281,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import ForumPostCard from '~/components/ForumPostCard.vue'
 

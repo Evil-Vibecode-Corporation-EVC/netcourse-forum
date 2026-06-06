@@ -238,7 +238,7 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 const route = useRoute()
 const { apiRequest, forumAPI } = useApi()
 const { $t } = useNuxtApp()

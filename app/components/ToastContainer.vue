@@ -68,7 +68,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { CheckCircle, XCircle, AlertCircle, X } from 'lucide-vue-next'
 const { $t } = useNuxtApp()
 

@@ -5,6 +5,6 @@
   </NuxtLayout>
 </template>
 
-<script setup>
+<script setup lang="ts">
 // No additional logic needed
 </script>

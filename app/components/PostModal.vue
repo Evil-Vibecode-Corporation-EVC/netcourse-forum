@@ -5,21 +5,21 @@
       <div v-if="modelValue" class="fixed inset-0 z-50 flex items-center justify-center p-4" @click.self="$emit('update:modelValue', false)">
         <div class="absolute inset-0 bg-slate-950/80 backdrop-blur-sm"></div>
         <Transition name="modal-scale">
-          <div v-if="modelValue" class="relative bg-slate-900 border border-emerald-500/30 rounded-2xl p-6 w-full max-w-2xl shadow-2xl shadow-emerald-500/5 overflow-hidden">
+          <div v-if="modelValue" class="relative bg-slate-900 border border-emerald-500/30 rounded-2xl p-4 sm:p-6 w-full max-w-2xl shadow-2xl shadow-emerald-500/5 max-h-[90vh] overflow-y-auto">
             <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none rounded-2xl"></div>
             <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-emerald-500/50 to-transparent"></div>
 
-            <div class="relative flex items-center gap-1.5 mb-6">
+            <div class="relative flex items-center gap-1.5 mb-4 sm:mb-6">
               <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
               <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
               <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
               <span class="text-slate-500 font-mono text-xs ml-2">{{ isEdit ? 'edit_post.sh' : 'new_post.sh' }}</span>
-              <button @click="$emit('update:modelValue', false)" class="absolute right-0 w-7 h-7 flex items-center justify-center rounded-lg bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white transition-all">
+              <button @click="$emit('update:modelValue', false)" class="absolute right-0 w-8 h-8 flex items-center justify-center rounded-lg bg-slate-800 border border-slate-700 hover:border-slate-500 text-slate-400 hover:text-white transition-all">
                 <span class="text-sm leading-none">×</span>
               </button>
             </div>
 
-            <h2 class="relative text-lg font-bold text-white font-mono mb-5">
+            <h2 class="relative text-base sm:text-lg font-bold text-white font-mono mb-4 sm:mb-5">
               {{ isEdit ? '> edit_post' : '> create_post' }}
             </h2>
 
@@ -32,7 +32,7 @@
                   type="text"
                   :placeholder="$t('modal.titlePlaceholder')"
                   required
-                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all"
+                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all"
                 />
               </div>
 
@@ -41,17 +41,17 @@
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// body *</label>
                 <textarea
                   v-model="form.body"
-                  rows="6"
+                  rows="4"
                   :placeholder="$t('modal.bodyPlaceholder')"
                   required
-                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none leading-relaxed"
+                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none leading-relaxed sm:min-h-[120px]"
                 ></textarea>
               </div>
 
               <!-- Теги -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
-                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-4 py-3 transition-all">
+                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 transition-all">
                   <div class="flex flex-wrap gap-1.5 mb-2" v-if="form.tags.length">
                     <span
                       v-for="(tag, i) in form.tags"
@@ -88,7 +88,7 @@
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// course <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <select
                   v-model="form.courseId"
-                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-4 py-3 text-white font-mono text-sm outline-none transition-all"
+                  class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/60 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm outline-none transition-all"
                 >
                   <option :value="null">{{ $t('modal.noCourse') }}</option>
                   <option
@@ -104,9 +104,9 @@
               </div>
 
               <!-- Оценка курса (появляется только когда выбран курс) -->
-              <div v-if="form.courseId && isAuthenticated" class="p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
+              <div v-if="form.courseId && isAuthenticated" class="p-3 sm:p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
                 <span class="block text-slate-400 font-mono text-xs mb-2">{{ $t('modal.courseRating') }}</span>
-                <div class="flex items-center gap-1">
+                <div class="flex items-center gap-1 flex-wrap">
                   <button
                     v-for="n in 5"
                     :key="n"
@@ -117,7 +117,7 @@
                     @mouseleave="hoveredRating = 0"
                   >
                     <svg
-                      class="w-7 h-7 transition-all duration-150"
+                      class="w-6 sm:w-7 h-6 sm:h-7 transition-all duration-150"
                       :class="[
                         n <= activeStar
                           ? 'text-amber-400 drop-shadow-[0_0_6px_rgba(251,191,36,0.4)]'
@@ -149,7 +149,7 @@
               <!-- Вложения -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// attachments <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
-                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl p-3 transition-all">
+                <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl p-2.5 sm:p-3 transition-all">
                   <!-- Существующие вложения (при редактировании) -->
                   <div v-if="isEdit && editPost?.attachments?.length" class="flex flex-wrap gap-2 mb-3">
                     <div
@@ -159,7 +159,7 @@
                     >
                       <span v-if="att.mimeType?.startsWith('image/')" class="text-emerald-400 text-xs">🖼</span>
                       <span v-else class="text-slate-400 text-xs">📎</span>
-                      <a :href="att.r2Key" target="_blank" class="text-slate-300 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px]">{{ att.fileName }}</a>
+                      <a :href="att.r2Key" target="_blank" class="text-slate-300 font-mono text-xs hover:text-emerald-400 truncate max-w-[80px] sm:max-w-[120px]">{{ att.fileName }}</a>
                       <button
                         type="button"
                         @click="deleteExistingAttachment(att.id)"
@@ -190,15 +190,15 @@
                 </div>
               </div>
 
-              <div v-if="errorMsg" class="px-4 py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-sm">
+              <div v-if="errorMsg" class="px-3 sm:px-4 py-2.5 sm:py-3 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 font-mono text-xs sm:text-sm">
                 ✗ {{ errorMsg }}
               </div>
 
-              <div class="flex gap-3 pt-1">
+              <div class="flex gap-2 sm:gap-3 pt-1">
                 <button
                   type="submit"
                   :disabled="loading"
-                  class="flex-1 py-3 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/60 text-emerald-400 font-mono text-sm font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  class="flex-1 py-2.5 sm:py-3 bg-emerald-500/10 border border-emerald-500/30 hover:bg-emerald-500/20 hover:border-emerald-500/60 text-emerald-400 font-mono text-sm font-semibold rounded-xl transition-all disabled:opacity-50 flex items-center justify-center gap-2"
                 >
                   <div v-if="loading" class="w-4 h-4 border-2 border-emerald-400 border-t-transparent rounded-full animate-spin"></div>
                   <span>{{ loading ? $t('modal.sending') : (isEdit ? '$ update.sh' : '$ publish.sh') }}</span>
@@ -206,7 +206,7 @@
                 <button
                   type="button"
                   @click="$emit('update:modelValue', false)"
-                  class="flex-1 py-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all"
+                  class="flex-1 py-2.5 sm:py-3 bg-slate-800 border border-slate-700 hover:bg-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all"
                 >
                   $ cancel
                 </button>

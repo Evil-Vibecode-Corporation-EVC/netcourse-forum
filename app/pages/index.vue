@@ -12,7 +12,7 @@
           forum.online — {{ meta.total }} discussions
         </div>
 
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+        <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6 leading-tight">
           <span class="font-mono text-emerald-500">root@forum:~#</span>
           <br />
           <span class="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
@@ -49,54 +49,6 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
       <!-- Главные темы -->
-      <section class="mb-16">
-        <div class="flex items-center gap-3 mb-6">
-          <div class="flex gap-1">
-            <div class="w-2.5 h-2.5 bg-red-500 rounded-full"></div>
-            <div class="w-2.5 h-2.5 bg-yellow-500 rounded-full"></div>
-            <div class="w-2.5 h-2.5 bg-green-500 rounded-full"></div>
-          </div>
-          <span class="text-slate-400 font-mono text-sm">featured_topics</span>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="group bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl p-6 transition-all hover:-translate-y-1 duration-300">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2M7 10l5 5 5-5"/><path d="M12 15V3"/></svg>
-              </div>
-              <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#popular</span>
-            </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Компьютерные сети</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">OSI, TCP/IP, маршрутизация, коммутация, VLAN, VPN, NAT, протоколы и инфраструктура сетей.</p>
-            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>87 тем</span><span>943 ответов</span></div>
-          </div>
-
-          <div class="group bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl p-6 transition-all hover:-translate-y-1 duration-300">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
-              </div>
-              <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#trending</span>
-            </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Кибербезопасность</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">Pentest, CTF, анализ угроз, шифрование, Firewall, IDS/IPS, безопасность сетей и веб-приложений.</p>
-            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>124 темы</span><span>1.8k ответов</span></div>
-          </div>
-
-          <div class="group bg-slate-900 border border-emerald-500/20 hover:border-emerald-500/40 rounded-xl p-6 transition-all hover:-translate-y-1 duration-300">
-            <div class="flex items-center gap-3 mb-4">
-              <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
-                <svg class="w-5 h-5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-              </div>
-              <span class="text-emerald-400 font-mono text-xs bg-emerald-500/10 px-2 py-1 rounded">#new</span>
-            </div>
-            <h3 class="text-white font-semibold text-lg mb-2 group-hover:text-emerald-400 transition-colors">Программирование</h3>
-            <p class="text-slate-400 text-sm leading-relaxed mb-4">Python, Go, Bash, автоматизация, сетевые API, парсинг, скриптинг и разработка сетевых инструментов.</p>
-            <div class="flex items-center gap-4 text-xs font-mono text-slate-500"><span>156 тем</span><span>2.1k ответов</span></div>
-          </div>
-        </div>
-      </section>
 
       <!-- Популярные теги -->
       <section class="mb-16">
@@ -311,7 +263,7 @@ const showDeleteModal = ref(false)
 const editTarget = ref(null)
 const deleteTarget = ref(null)
 
-const popularTags = ['сети', 'tcp-ip', 'osi', 'vlan', 'vpn', 'кибербезопасность', 'python', 'bash', 'linux', 'cisco', 'маршрутизация', 'pentest']
+const popularTags = ['python', 'javascript', 'csharp', 'c++', 'linux', 'bash', 'docker', 'git', 'api', 'backend', 'frontend', 'sql', 'сети', 'tcp-ip', 'osi', 'маршрутизация', 'vlan', 'vpn', 'dns', 'dhcp', 'cisco', 'mikrotik', 'wireshark', 'кибербезопасность', 'pentest', 'xss', 'sql-injection', 'osint']
 
 const filterByTag = (tag) => {
   activeTag.value = activeTag.value === tag ? '' : tag

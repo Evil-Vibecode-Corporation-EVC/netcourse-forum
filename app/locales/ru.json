@@ -15,6 +15,7 @@
       "completed": "завершён",
       "notCompleted": "не завершён",
       "yourRating": "Ваш отзыв: {rating} из 5",
+      "yourRatingLabel": "Ваша оценка",
       "loginToRate": "Войдите, чтобы оценить курс.",
       "authorRating": "Оценка автора:",
       "notRated": "не оценено",

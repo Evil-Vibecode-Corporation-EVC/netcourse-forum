@@ -90,20 +90,38 @@
             <div class="flex flex-col gap-5">
               <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
-                  <NuxtLink
-                    :to="`/courses/${course.id}`"
-                    class="text-xl font-semibold text-white hover:text-emerald-300 transition-colors"
+                  <a
+                    href="https://netcourse.tech/courses"
+                    target="_blank"
+                    class="text-xl font-semibold text-white hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
                   >
                     {{ course.title }}
-                  </NuxtLink>
-                  <div class="mt-2 text-slate-500 font-mono text-xs">
-                    {{ course.category || 'General' }} · {{ course.averageRating?.toFixed(1) || '0.0' }}/5 · {{ course.ratingsCount || 0 }} {{ $t('forum.ratings') }}
+                    <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  </a>
+                  <div class="mt-2 flex items-center gap-2 text-slate-500 font-mono text-xs">
+                    <span>{{ course.category || 'General' }}</span>
+                    <span>·</span>
+                    <span class="flex items-center gap-0.5">
+                      <svg
+                        v-for="i in 5"
+                        :key="i"
+                        class="w-3 h-3"
+                        :class="i <= Math.round(course.averageRating || 0) ? 'text-amber-400' : 'text-slate-700'"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                      </svg>
+                    </span>
+                    <span>{{ course.averageRating?.toFixed(1) || '0.0' }}</span>
+                    <span>·</span>
+                    <span>{{ course.ratingsCount || 0 }} {{ $t('forum.ratings') }}</span>
                   </div>
                 </div>
                 <div class="flex items-center gap-3 flex-wrap text-slate-400 text-xs">
                   <span v-if="courseCompleted" class="uppercase tracking-[0.16em]">{{ $t('forum.post.completed') }}</span>
                   <span v-else class="uppercase tracking-[0.16em]">{{ $t('forum.post.notCompleted') }}</span>
-                  <span v-if="userRating !== null">{{ $t('forum.post.yourRating', { rating: userRating }) }}</span>
+                  <span v-if="myRating !== null">{{ $t('forum.post.yourRating', { rating: myRating }) }}</span>
                   <span v-if="!isAuthenticated">{{ $t('forum.post.loginToRate') }}</span>
                 </div>
               </div>
@@ -112,24 +130,21 @@
                 {{ course.description }}
               </p>
 
-              <div class="flex flex-col gap-3">
-                <div class="flex items-center gap-2 text-slate-200 font-mono text-sm">
-                  <span>{{ $t('forum.post.authorRating') }}</span>
-                  <span class="flex items-center gap-0.5">
-                    <template v-for="n in 5" :key="n">
-                      <svg
-                        class="w-4 h-4"
-                        :class="n <= (userRating || 0) ? 'text-amber-400' : 'text-slate-600'"
-                        viewBox="0 0 20 20"
-                        fill="currentColor"
-                      >
-                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                      </svg>
-                    </template>
-                  </span>
-                  <span class="text-slate-500 text-xs">{{ userRating !== null ? `${userRating} / 5` : $t('forum.post.notRated') }}</span>
-                </div>
-                <div v-if="userRating === null" class="text-slate-500 font-mono text-xs">{{ $t('forum.post.noAuthorRating') }}</div>
+              <div v-if="myRating !== null" class="flex items-center gap-2 text-slate-200 font-mono text-sm">
+                <span>{{ $t('forum.post.yourRatingLabel') }}</span>
+                <span class="flex items-center gap-0.5">
+                  <template v-for="n in 5" :key="n">
+                    <svg
+                      class="w-4 h-4"
+                      :class="n <= (myRating || 0) ? 'text-amber-400' : 'text-slate-600'"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                    </svg>
+                  </template>
+                </span>
+                <span class="text-slate-500 text-xs">{{ myRating }} / 5</span>
               </div>
             </div>
           </div>
@@ -393,7 +408,7 @@ const postLikesCount = ref(0)
 // состояния для курса
 const course = ref(null)
 const courseCompleted = ref(false)
-const userRating = ref(null)
+const myRating = ref(null)
 
 const canEditPost = computed(() => {
   if (!user.value || !post.value) return false
@@ -462,8 +477,10 @@ const loadCourseInfo = async () => {
       courseCompleted.value = progress?.status === 'completed'
       
       const ratingData = await apiRequest(`/courses/${post.value.courseId}/ratings/me`).catch(() => null)
-      userRating.value = ratingData?.rating ?? null
+      myRating.value = ratingData?.rating ?? null
     }
+
+
   } catch (e) {
     console.error('Course info error:', e)
   }
@@ -471,8 +488,8 @@ const loadCourseInfo = async () => {
 
 const rateCourse = async (rating) => {
   if (!isAuthenticated.value || !courseCompleted.value || !post.value.courseId) return
-  const prevRating = userRating.value
-  userRating.value = rating
+  const prevRating = myRating.value
+  myRating.value = rating
   try {
     const res = await apiRequest(`/courses/${post.value.courseId}/ratings`, {
       method: 'POST',
@@ -484,7 +501,7 @@ const rateCourse = async (rating) => {
     }
     success($t('forum.notifications.ratingUpdated'))
   } catch (e) {
-    userRating.value = prevRating
+    myRating.value = prevRating
     showError(handleApiError(e, $t('errors.rateCourse')))
   }
 }

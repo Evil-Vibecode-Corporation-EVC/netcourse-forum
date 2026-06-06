@@ -252,7 +252,7 @@ const hoveredRating = ref(0)
 
 const activeStar = computed(() => hoveredRating.value || form.rating || 0)
 
-const suggestedTags = ['сети', 'tcp-ip', 'osi', 'vlan', 'vpn', 'кибербезопасность', 'python', 'bash', 'linux', 'cisco', 'маршрутизация', 'pentest']
+const suggestedTags = ['python', 'javascript', 'csharp', 'c++', 'linux', 'bash', 'docker', 'git', 'api', 'backend', 'frontend', 'sql', 'сети', 'tcp-ip', 'osi', 'маршрутизация', 'vlan', 'vpn', 'dns', 'dhcp', 'cisco', 'mikrotik', 'wireshark', 'кибербезопасность', 'pentest', 'xss', 'sql-injection', 'osint']
 
 // Теги
 const addTag = () => {

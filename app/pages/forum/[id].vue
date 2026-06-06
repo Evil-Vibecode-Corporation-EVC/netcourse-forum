@@ -1,9 +1,9 @@
 <template>
-  <main class="min-h-screen bg-slate-950 pt-24 pb-20 px-4 sm:px-6">
+  <main class="min-h-screen bg-slate-950 pt-20 sm:pt-24 pb-16 sm:pb-20 px-4 sm:px-6">
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:40px_40px] opacity-30 pointer-events-none"></div>
 
     <div class="max-w-4xl mx-auto relative z-10">
-      <NuxtLink to="/" class="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-400 font-mono text-sm mb-8 transition-all group">
+      <NuxtLink to="/" class="inline-flex items-center gap-2 text-slate-500 hover:text-emerald-400 font-mono text-xs sm:text-sm mb-5 sm:mb-8 transition-all group">
         <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         $ cd ~/forum
       </NuxtLink>
@@ -13,7 +13,7 @@
       </div>
 
       <template v-else-if="post">
-        <article :class="['bg-slate-900 rounded-2xl p-6 sm:p-8 mb-8 relative overflow-hidden', isCoursePost ? 'border border-emerald-500/40 shadow-[0_0_18px_rgba(16,185,129,0.08)]' : 'border border-slate-700/30']">
+        <article :class="['bg-slate-900 rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 relative overflow-hidden', isCoursePost ? 'border border-emerald-500/40 shadow-[0_0_18px_rgba(16,185,129,0.08)]' : 'border border-slate-700/30']">
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-px bg-gradient-to-r from-transparent via-slate-500/20 to-transparent"></div>
 
           <div class="flex items-center gap-1.5 mb-6">
@@ -47,17 +47,12 @@
               <div class="text-slate-300 font-mono text-sm font-semibold">{{ post.user?.username }}</div>
               <div class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</div>
             </div>
-            <div v-if="isCoursePost && course" class="ml-auto text-right">
-              <div class="text-slate-500 font-mono text-[10px] uppercase tracking-[0.24em] mb-1">{{ $t('forum.post.courseLabel') }}</div>
-              <NuxtLink :to="`/courses/${course.id}`" class="text-slate-200 text-sm font-semibold hover:text-white transition-colors block max-w-[220px] truncate">
-                {{ course.title }}
-              </NuxtLink>
-            </div>
+
           </div>
 
-          <h1 class="text-2xl sm:text-3xl font-bold text-white mb-5 leading-snug">{{ post.title }}</h1>
+          <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-4 sm:mb-5 leading-snug break-words">{{ post.title }}</h1>
 
-          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap font-mono text-sm rounded-xl p-5 mb-5 bg-slate-800/50 border border-slate-700/50">
+          <div class="text-slate-300 leading-relaxed whitespace-pre-wrap break-words font-mono text-sm rounded-xl p-4 sm:p-5 mb-5 bg-slate-800/50 border border-slate-700/50">
             {{ post.body }}
           </div>
 
@@ -73,39 +68,39 @@
                   <div class="w-8 h-8 rounded overflow-hidden shrink-0">
                     <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
                   </div>
-                  <span class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[150px] transition-colors">{{ att.fileName }}</span>
+                  <span class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[100px] sm:max-w-[150px] transition-colors">{{ att.fileName }}</span>
                 </a>
               </template>
               <template v-else>
                 <span class="text-slate-500 text-xs">📎</span>
-                <a :href="att.r2Key" target="_blank" class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[200px] transition-colors">{{ att.fileName }}</a>
+                <a :href="att.r2Key" target="_blank" class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px] sm:max-w-[200px] transition-colors">{{ att.fileName }}</a>
               </template>
             </div>
           </div>
 
           <div
             v-if="post.courseId && course"
-            class="mb-8 p-6 rounded-2xl border border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm"
+            class="mb-6 sm:mb-8 p-4 sm:p-6 rounded-2xl border border-emerald-500/20 bg-slate-900/50 backdrop-blur-sm"
           >
-            <div class="flex flex-col gap-5">
-              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div>
+            <div class="flex flex-col gap-4 sm:gap-5">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+                <div class="min-w-0">
                   <a
                     href="https://netcourse.tech/courses"
                     target="_blank"
-                    class="text-xl font-semibold text-white hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
+                    class="text-lg sm:text-xl font-semibold text-white hover:text-emerald-300 transition-colors inline-flex items-center gap-2"
                   >
-                    {{ course.title }}
-                    <svg class="w-4 h-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                    <span class="truncate max-w-[220px] sm:max-w-none">{{ course.title }}</span>
+                    <svg class="w-4 h-4 text-slate-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   </a>
-                  <div class="mt-2 flex items-center gap-2 text-slate-500 font-mono text-xs">
+                  <div class="mt-2 flex items-center gap-2 text-slate-500 font-mono text-xs flex-wrap">
                     <span>{{ course.category || 'General' }}</span>
                     <span>·</span>
                     <span class="flex items-center gap-0.5">
                       <svg
                         v-for="i in 5"
                         :key="i"
-                        class="w-3 h-3"
+                        class="w-3 h-3 shrink-0"
                         :class="i <= Math.round(course.averageRating || 0) ? 'text-amber-400' : 'text-slate-700'"
                         viewBox="0 0 20 20"
                         fill="currentColor"
@@ -130,12 +125,12 @@
                 {{ course.description }}
               </p>
 
-              <div v-if="myRating !== null" class="flex items-center gap-2 text-slate-200 font-mono text-sm">
+              <div v-if="myRating !== null" class="flex items-center gap-2 text-slate-200 font-mono text-sm flex-wrap">
                 <span>{{ $t('forum.post.yourRatingLabel') }}</span>
                 <span class="flex items-center gap-0.5">
                   <template v-for="n in 5" :key="n">
                     <svg
-                      class="w-4 h-4"
+                      class="w-4 h-4 shrink-0"
                       :class="n <= (myRating || 0) ? 'text-amber-400' : 'text-slate-600'"
                       viewBox="0 0 20 20"
                       fill="currentColor"
@@ -159,11 +154,11 @@
             </NuxtLink>
           </div>
 
-          <div class="flex items-center gap-4 border-t border-slate-800 pt-4">
+          <div class="flex items-center gap-2 sm:gap-4 border-t border-slate-800 pt-4">
             <button
               @click="togglePostLike"
               :disabled="!isAuthenticated"
-              class="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all font-mono text-sm"
+              class="flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-2 rounded-xl border transition-all font-mono text-xs sm:text-sm"
               :class="postLiked
                 ? 'bg-emerald-500/15 border-emerald-500/40 text-emerald-400'
                 : 'bg-slate-800 border-slate-700 text-slate-400 hover:border-emerald-500/40 hover:text-emerald-400'"
@@ -177,11 +172,11 @@
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
               <span>{{ postLikesCount }}</span>
-              <span class="text-xs text-slate-500">{{ postLiked ? 'liked' : 'like' }}</span>
+              <span class="text-xs text-slate-500 hidden sm:inline">{{ postLiked ? 'liked' : 'like' }}</span>
             </button>
 
             <span class="text-slate-600 font-mono text-xs">
-              <span :class="['w-1.5 h-1.5 rounded-full inline-block mr-1.5', isCoursePost ? 'bg-emerald-500/50' : 'bg-emerald-500/50']"></span>
+              <span class="w-1.5 h-1.5 rounded-full inline-block mr-1.5 bg-emerald-500/50"></span>
               {{ replyMeta.total }} replies
             </span>
           </div>
@@ -198,7 +193,7 @@
             <span class="bg-slate-800 border border-slate-700 text-slate-400 font-mono text-xs px-2 py-0.5 rounded-lg">{{ replyMeta.total }}</span>
           </div>
 
-          <div v-if="isAuthenticated" class="bg-slate-900 border border-emerald-500/20 rounded-xl p-5 mb-6">
+          <div v-if="isAuthenticated" class="bg-slate-900 border border-emerald-500/20 rounded-xl p-4 sm:p-5 mb-6">
             <div class="flex items-center gap-1.5 mb-4">
               <div class="w-2 h-2 bg-red-500 rounded-full"></div>
               <div class="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -209,7 +204,7 @@
               v-model="replyBody"
               rows="3"
               :placeholder="$t('forum.post.replyPlaceholder')"
-              class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/50 rounded-xl px-4 py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none mb-3"
+              class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none mb-3"
             ></textarea>
 
             <!-- Прикрепление файлов к ответу -->
@@ -217,7 +212,7 @@
               <button
                 type="button"
                 @click="replyFileInput?.click()"
-                class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 font-mono text-xs rounded-lg transition-all"
+                class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 font-mono text-xs rounded-lg transition-all max-w-full"
               >
                 <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/>
@@ -260,7 +255,7 @@
             <div
               v-for="reply in replies"
               :key="reply.id"
-              class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-5 transition-all"
+              class="group bg-slate-900 border border-slate-800 hover:border-slate-700 rounded-xl p-4 sm:p-5 transition-all"
             >
               <div class="flex items-start gap-3">
                 <UserTooltip :user-id="reply.user?.id || reply.userId">
@@ -278,7 +273,7 @@
                   </div>
 
                   <div v-if="editingReplyId !== reply.id">
-                    <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap">{{ reply.body }}</p>
+                    <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words">{{ reply.body }}</p>
                     <div v-if="reply.attachments?.length" class="flex flex-wrap gap-2 mt-3">
                       <div
                         v-for="att in reply.attachments"
@@ -290,12 +285,12 @@
                             <div class="w-6 h-6 rounded overflow-hidden shrink-0">
                               <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
                             </div>
-                            <span class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px] transition-colors">{{ att.fileName }}</span>
+                            <span class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[80px] sm:max-w-[120px] transition-colors">{{ att.fileName }}</span>
                           </a>
                         </template>
                         <template v-else>
                           <span class="text-slate-500 text-xs">📎</span>
-                          <a :href="att.r2Key" target="_blank" class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[150px] transition-colors">{{ att.fileName }}</a>
+                          <a :href="att.r2Key" target="_blank" class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[100px] sm:max-w-[150px] transition-colors">{{ att.fileName }}</a>
                         </template>
                       </div>
                     </div>
@@ -335,7 +330,7 @@
                   </div>
                 </div>
 
-                <div v-if="canEditReply(reply) && editingReplyId !== reply.id" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
+                <div v-if="canEditReply(reply) && editingReplyId !== reply.id" class="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity shrink-0">
                   <button @click="startEditReply(reply)" class="p-1.5 rounded-lg bg-slate-800 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 transition-all">
                     <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                   </button>
@@ -346,20 +341,20 @@
               </div>
             </div>
 
-            <div v-if="!replies.length && !repliesLoading" class="text-center py-10">
+            <div v-if="!replies.length && !repliesLoading" class="text-center py-8 sm:py-10">
               <div class="text-slate-600 font-mono text-sm">// no replies yet — be the first!</div>
             </div>
           </div>
 
-          <div v-if="replyMeta.totalPages > 1" class="flex justify-center gap-2 mt-8">
-            <button @click="loadReplies(replyMeta.page - 1)" :disabled="replyMeta.page === 1" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all disabled:opacity-40">← prev</button>
-            <button @click="loadReplies(replyMeta.page + 1)" :disabled="replyMeta.page === replyMeta.totalPages" class="px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-sm rounded-xl transition-all disabled:opacity-40">next →</button>
+          <div v-if="replyMeta.totalPages > 1" class="flex justify-center gap-2 mt-6 sm:mt-8">
+            <button @click="loadReplies(replyMeta.page - 1)" :disabled="replyMeta.page === 1" class="px-3 sm:px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-xs sm:text-sm rounded-xl transition-all disabled:opacity-40">← prev</button>
+            <button @click="loadReplies(replyMeta.page + 1)" :disabled="replyMeta.page === replyMeta.totalPages" class="px-3 sm:px-4 py-2 bg-slate-900 border border-slate-700 text-slate-400 font-mono text-xs sm:text-sm rounded-xl transition-all disabled:opacity-40">next →</button>
           </div>
         </section>
       </template>
 
-      <div v-else class="text-center py-24">
-        <div class="text-slate-400 font-mono text-lg">// post not found</div>
+      <div v-else class="text-center py-16 sm:py-24">
+        <div class="text-slate-400 font-mono text-base sm:text-lg">// post not found</div>
         <NuxtLink to="/" class="mt-4 inline-block text-emerald-400 font-mono hover:underline">$ cd ~/forum</NuxtLink>
       </div>
     </div>

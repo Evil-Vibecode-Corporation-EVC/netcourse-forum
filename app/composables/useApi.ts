@@ -1,4 +1,3 @@
-// composables/useApi.ts
 export const useApi = () => {
   const config = useRuntimeConfig()
   const router = useRouter()
@@ -14,7 +13,6 @@ export const useApi = () => {
       ...options,
     }
 
-    // Добавляем токен авторизации если есть
     if (process.client) {
       const token = localStorage.getItem('authToken')
       if (token) {
@@ -22,7 +20,6 @@ export const useApi = () => {
       }
     }
 
-    // Преобразуем body в JSON если это объект
     if (requestConfig.body && typeof requestConfig.body === 'object') {
       requestConfig.body = JSON.stringify(requestConfig.body)
     }
@@ -32,7 +29,6 @@ export const useApi = () => {
 
       const contentType = response.headers.get('content-type')
 
-      // Обработка пустых ответов (204 No Content)
       if (response.status === 204 || !contentType || !contentType.includes('application/json')) {
         if (response.ok) {
           return { success: true }
@@ -42,7 +38,6 @@ export const useApi = () => {
         }
       }
 
-      // Парсим JSON ответ
       let data
       try {
         data = await response.json()
@@ -53,7 +48,6 @@ export const useApi = () => {
         throw new Error(`Invalid JSON response from server: ${response.status} ${response.statusText}`)
       }
 
-      // Проверяем статус ответа
       if (!response.ok) {
         const errorMessage = data.message || data.error || `HTTP Error: ${response.status}`
         throw new Error(errorMessage)
@@ -80,9 +74,7 @@ export const useApi = () => {
     }
   }
 
-  // ============ ФОРУМ ============
   const forumAPI = {
-    // Посты
     getPosts: (page = 1, limit = 20) => apiRequest(`/forum/posts?page=${page}&limit=${limit}`),
     getPost: (id: number) => apiRequest(`/forum/posts/${id}`),
     createPost: (data: { title: string; body: string; tags?: string[] }) => apiRequest('/forum/posts', {
@@ -97,7 +89,6 @@ export const useApi = () => {
       method: 'DELETE'
     }),
 
-    // Ответы
     getReplies: (postId: number, page = 1, limit = 20) =>
       apiRequest(`/forum/posts/${postId}/replies?page=${page}&limit=${limit}`),
     createReply: (postId: number, body: string) => apiRequest(`/forum/posts/${postId}/replies`, {
@@ -112,16 +103,13 @@ export const useApi = () => {
       method: 'DELETE'
     }),
 
-    // Лайки постов
     likePost: (postId: number) => apiRequest(`/forum/posts/${postId}/likes`, { method: 'POST' }),
     unlikePost: (postId: number) => apiRequest(`/forum/posts/${postId}/likes`, { method: 'DELETE' }),
 
-    // Лайки ответов
     likeReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}/likes`, { method: 'POST' }),
     unlikeReply: (postId: number, replyId: number) => apiRequest(`/forum/posts/${postId}/replies/${replyId}/likes`, { method: 'DELETE' }),
   }
 
-  // ============ ВЛОЖЕНИЯ ФОРУМА ============
   const uploadFileRequest = async (endpoint: string, method: string, formData: FormData) => {
     const url = `${config.public.apiBase}${endpoint}`
     const headers: Record<string, string> = {}
@@ -168,33 +156,24 @@ export const useApi = () => {
       apiRequest(`/forum/posts/${postId}/replies/${replyId}/attachments/${attachmentId}`, { method: 'DELETE' }),
   }
 
-  // ============ ПРОФИЛИ (публичные) ============
   const profileAPI = {
-    // Получить публичный профиль по ID
     getById: (userId: number) => apiRequest(`/profiles/${userId}`),
-    // Получить публичный профиль по username
     getByUsername: (username: string) => apiRequest(`/profiles/u/${username}`),
   }
 
-  // ============ КУРСЫ ============
   const courseAPI = {
-    // Получить список всех курсов
     getAll: () => apiRequest('/courses'),
-    // Получить курс по ID
     getById: (courseId: number) => apiRequest(`/courses/${courseId}`),
 
-    // Прогресс пользователя по курсу (требуется авторизация)
     getProgress: (courseId: number) => apiRequest(`/courses/${courseId}/progress`),
-    // Обновить прогресс (PUT)
     updateProgress: (courseId: number, status: 'not_started' | 'in_progress' | 'completed') =>
       apiRequest(`/courses/${courseId}/progress`, {
         method: 'PUT',
         body: { status }
       }),
 
-    // Рейтинги
-    getRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings`),               // средний рейтинг и количество
-    getMyRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings/me`),           // оценка текущего пользователя
+    getRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings`),
+    getMyRating: (courseId: number) => apiRequest(`/courses/${courseId}/ratings/me`),
     addOrUpdateRating: (courseId: number, rating: number) =>
       apiRequest(`/courses/${courseId}/ratings`, {
         method: 'POST',
@@ -202,7 +181,6 @@ export const useApi = () => {
       }),
   }
 
-  // ============ АУТЕНТИФИКАЦИЯ ============
   const authAPI = {
     register: (userData: any) => apiRequest('/auth/register', {
       method: 'POST',
@@ -251,7 +229,6 @@ export const useApi = () => {
     }
   }
 
-  // ============ УТИЛИТЫ ============
   const handleApiError = (error: any, defaultMessage = 'errors.default') => {
     console.error('API Error Handling:', error)
 
@@ -310,7 +287,7 @@ export const useApi = () => {
     forumAPI,
     forumAttachmentAPI,
     profileAPI,
-    courseAPI,      // <-- добавлено
+    courseAPI,
     authAPI,
     handleApiError,
     sanitizeData

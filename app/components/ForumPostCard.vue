@@ -1,4 +1,3 @@
-<!-- components/ForumPostCard.vue -->
 <template>
   <article
     :class="[
@@ -9,7 +8,6 @@
     ]"
     @click="$emit('click')"
   >
-    <!-- Декоративный уголок (золотой + ярче) -->
     <div
       :class="[
         'absolute top-0 right-0 w-6 h-6 border-t border-r rounded-tr-xl transition-all',
@@ -19,7 +17,6 @@
 
 
     <div class="flex items-start gap-3 mb-3">
-      <!-- Аватар с tooltip -->
       <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
         <div
           class="w-9 h-9 rounded-full border flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer"
@@ -41,7 +38,6 @@
           <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
           <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
 
-          <!-- Значок курса – более заметный -->
           <span
             v-if="isCoursePost"
             class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
@@ -80,7 +76,6 @@
       {{ post.body }}
     </p>
 
-    <!-- Теги -->
     <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
       <span
         v-for="tag in post.tags"
@@ -109,7 +104,6 @@
         <span class="font-mono text-xs">{{ post.attachments.length }}</span>
       </span>
 
-      <!-- Лайки -->
       <button
         class="flex items-center gap-1.5 transition-all group/like"
         :class="localLiked ? 'text-emerald-400' : 'text-slate-500 hover:text-emerald-400'"

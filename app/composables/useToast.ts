@@ -1,4 +1,3 @@
-// composables/useToast.ts
 export const useToast = () => {
   const toasts = useState<any[]>('toasts', () => [])
 

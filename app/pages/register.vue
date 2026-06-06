@@ -1,4 +1,3 @@
-<!-- pages/register.vue -->
 <template>
   <main class="min-h-screen bg-slate-950 flex items-center justify-center px-4 pt-16">
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98110_1px,transparent_1px),linear-gradient(to_bottom,#10b98110_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>

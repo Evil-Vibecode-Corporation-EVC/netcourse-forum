@@ -1,25 +1,28 @@
-<!-- pages/profile/index.vue -->
 <template>
   <main class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pt-20 pb-20 px-4 sm:px-6 relative overflow-hidden">
-    <!-- Static background -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-    <!-- Loading -->
     <div v-if="loading" class="flex items-center justify-center min-h-[70vh]">
       <div class="text-center">
-        <div class="w-12 h-12 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 mx-auto mb-5"></div>
-        <p class="text-emerald-400/70 font-mono text-sm">{{ $t('profile.loading') }}</p>
+        <div class="relative w-16 h-16 mx-auto mb-6">
+          <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping"></div>
+          <div class="absolute inset-2 rounded-full border-2 border-emerald-500/40 animate-ping" style="animation-delay: 0.3s"></div>
+          <div class="absolute inset-0 rounded-full border-2 border-t-emerald-400 border-emerald-500/10 animate-spin"></div>
+          <div class="absolute inset-4 rounded-full bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-emerald-400/70 font-mono text-sm animate-pulse">{{ $t('profile.loading') }}</p>
       </div>
     </div>
 
-    <!-- Profile Content -->
     <div v-else-if="userData" class="max-w-6xl mx-auto relative z-10">
-      <!-- Profile Header -->
       <div class="relative bg-slate-900/70 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">
         <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
         <div class="p-6 md:p-8">
-          <!-- Terminal header -->
           <div class="flex items-center gap-2 pb-4 mb-6 border-b border-slate-800/80">
             <div class="flex gap-1.5">
               <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
@@ -30,7 +33,6 @@
           </div>
 
           <div class="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
-            <!-- Avatar -->
             <div class="flex flex-col items-center gap-4">
               <div class="relative">
                 <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full blur-md opacity-20"></div>
@@ -40,7 +42,6 @@
                 </div>
               </div>
 
-              <!-- Social links -->
               <div v-if="socialLinks.length" class="flex flex-wrap justify-center gap-2">
                 <a v-for="link in socialLinks" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer"
                   class="p-2.5 rounded-full bg-slate-800/80 border border-slate-700/80 text-slate-400">
@@ -52,7 +53,6 @@
               </div>
             </div>
 
-            <!-- User info -->
             <div class="flex-1 text-center lg:text-left">
               <div class="mb-4">
                 <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent font-mono mb-1">{{ userData.username }}</h1>
@@ -72,7 +72,6 @@
         </div>
       </div>
 
-      <!-- Badges -->
       <div v-if="badges.length" class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -94,7 +93,6 @@
         </div>
       </div>
 
-      <!-- Certifications -->
       <div v-if="certifications.length" class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -105,20 +103,20 @@
           <span class="text-slate-400 font-mono text-xs ml-2">my_certifications</span>
           <span class="ml-auto text-amber-400 text-xs bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">{{ certifications.length }}</span>
         </div>
-        <div class="p-5 grid sm:grid-cols-2 gap-3">
-          <div v-for="cert in certifications" :key="cert.id" class="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-800/40 to-slate-800/20 rounded-xl border border-slate-700/50">
-            <div class="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+        <div class="p-4 sm:p-5 grid sm:grid-cols-2 gap-3">
+          <div v-for="cert in certifications" :key="cert.id" class="relative flex items-center gap-4 p-4 bg-gradient-to-br from-slate-800/60 to-slate-800/20 rounded-xl border border-amber-500/20 hover:border-amber-500/40 transition-all group">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-bl-3xl rounded-tr-xl pointer-events-none"></div>
+            <div class="w-12 h-12 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 sm:w-5 h-6 sm:h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
             </div>
             <div class="min-w-0 flex-1">
               <p class="text-white text-sm font-semibold font-mono truncate">{{ cert.course?.title || $t('profile.course') }}</p>
-              <p class="text-slate-500 text-xs mt-0.5">{{ $t('profile.issued', { date: formatDate(cert.issuedAt) }) }}</p>
+              <p class="text-slate-500 text-xs mt-0.5 font-mono">{{ $t('profile.issued', { date: formatDate(cert.issuedAt) }) }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- My Posts -->
       <div class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -190,38 +188,32 @@ const formatDate = (dateStr) => {
 const loadProfile = async () => {
   loading.value = true
   try {
-    // Получаем актуальные данные пользователя
     let currentUser = user.value
     if (!currentUser?.id) {
       await refreshUser()
       currentUser = user.value
     }
-    
+
     if (!currentUser?.id) {
-      throw new Error('Пользователь не авторизован')
+      throw new Error('User not authorized')
     }
-    
-    // Загружаем данные пользователя
+
     const userResponse = await apiRequest(`/users/${currentUser.id}`)
     userData.value = userResponse
-    
-    // Загружаем соц. ссылки
+
     const linksResponse = await apiRequest('/social-links')
     socialLinks.value = linksResponse
-    
-    // Загружаем значки
+
     const badgesResponse = await apiRequest('/badges/me')
     badges.value = badgesResponse
-    
-    // Загружаем сертификаты
+
     const certsResponse = await apiRequest('/certifications/me')
     certifications.value = certsResponse
-    
-    // Загружаем посты пользователя
+
     const postsResponse = await apiRequest('/forum/posts?limit=50')
     const allPosts = postsResponse.data || postsResponse || []
     myPosts.value = allPosts.filter(p => p.userId === userData.value.id || p.user?.id === userData.value.id)
-    
+
   } catch (err) {
     console.error('Error loading profile:', err)
     if (err.message?.includes('401') || err.message?.includes('Unauthorized')) {

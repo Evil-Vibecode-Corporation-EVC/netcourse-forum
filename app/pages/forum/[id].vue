@@ -56,7 +56,6 @@
             {{ post.body }}
           </div>
 
-          <!-- Вложения поста -->
           <div v-if="post.attachments?.length" class="flex flex-wrap gap-2 mb-5">
             <div
               v-for="att in post.attachments"
@@ -207,7 +206,6 @@
               class="w-full bg-slate-800 border border-slate-700 focus:border-emerald-500/50 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 text-white font-mono text-sm placeholder-slate-600 outline-none transition-all resize-none mb-3"
             ></textarea>
 
-            <!-- Прикрепление файлов к ответу -->
             <div class="flex items-center gap-3 mb-3">
               <button
                 type="button"

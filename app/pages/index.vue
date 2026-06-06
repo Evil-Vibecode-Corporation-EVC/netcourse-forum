@@ -1,7 +1,5 @@
-<!-- pages/index.vue -->
 <template>
   <main class="min-h-screen bg-slate-950 pt-16">
-    <!-- Hero секция -->
     <section class="relative pt-20 pb-16 px-6 overflow-hidden">
       <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98115_1px,transparent_1px),linear-gradient(to_bottom,#10b98115_1px,transparent_1px)] bg-[size:40px_40px]"></div>
       <div class="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none"></div>
@@ -48,9 +46,6 @@
     </section>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 pb-20">
-      <!-- Главные темы -->
-
-      <!-- Популярные теги -->
       <section class="mb-16">
         <div class="flex items-center gap-3 mb-6">
           <div class="flex gap-1">
@@ -85,7 +80,6 @@
         </div>
       </section>
 
-      <!-- Посты -->
       <section id="posts">
         <div class="flex flex-col gap-4 mb-6">
           <div class="flex flex-wrap items-center justify-between gap-4">
@@ -141,7 +135,6 @@
           </div>
         </div>
 
-        <!-- Loading -->
         <div v-if="loading" class="flex items-center justify-center py-24">
           <div class="text-center">
             <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -149,7 +142,6 @@
           </div>
         </div>
 
-        <!-- Error -->
         <div v-else-if="error" class="text-center py-16">
           <div class="text-red-400 font-mono mb-4">✗ {{ error }}</div>
           <button @click="loadPosts" class="px-5 py-2 bg-slate-800 border border-slate-700 text-slate-300 font-mono text-sm rounded-xl hover:bg-slate-700 transition-all">
@@ -157,7 +149,6 @@
           </button>
         </div>
 
-        <!-- Posts list с использованием компонента ForumPostCard -->
         <div v-else-if="filteredPosts.length" class="space-y-3">
           <ForumPostCard
             v-for="post in filteredPosts"
@@ -171,7 +162,6 @@
           />
         </div>
 
-        <!-- Empty -->
         <div v-else class="text-center py-24">
           <div class="w-16 h-16 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center mx-auto mb-4">
             <svg class="w-8 h-8 text-slate-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
@@ -182,7 +172,6 @@
           <div class="text-slate-600 font-mono text-sm">{{ $t('forum.home.emptyPrompt') }}</div>
         </div>
 
-        <!-- Pagination -->
         <div v-if="meta.totalPages > 1" class="flex items-center justify-center gap-2 mt-10">
           <button @click="changePage(meta.page - 1)" :disabled="meta.page === 1" class="px-4 py-2 bg-slate-900 border border-slate-700 hover:border-emerald-500/40 text-slate-400 font-mono text-sm rounded-xl transition-all disabled:opacity-40 disabled:cursor-not-allowed">← prev</button>
           <div class="flex gap-1">
@@ -199,7 +188,6 @@
       </section>
     </div>
 
-    <!-- Modals -->
     <PostModal v-model="showPostModal" @submitted="onPostCreated" />
     <PostModal v-model="showEditModal" :edit-post="editTarget" @submitted="onPostUpdated" />
     <ConfirmModal v-model="showDeleteModal" :title="$t('modal.deletePostTitle')" :message="$t('modal.deletePostMessage')" @confirm="confirmDelete" />

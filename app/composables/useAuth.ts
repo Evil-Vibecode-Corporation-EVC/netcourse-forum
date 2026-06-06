@@ -1,4 +1,3 @@
-// composables/useAuth.ts
 export interface User {
   id?: number
   email: string
@@ -14,7 +13,7 @@ export interface User {
 
 export const useAuth = () => {
   const router = useRouter()
-  const { authAPI, handleApiError, sanitizeData, apiRequest } = useApi() // добавили apiRequest
+  const { authAPI, handleApiError, sanitizeData, apiRequest } = useApi()
   const { $t } = useNuxtApp()
   
   const user = useState<User | null>('auth:user', () => null)
@@ -159,10 +158,8 @@ export const useAuth = () => {
     }
   }
 
-  // Метод для обновления данных пользователя с сервера
   const refreshUser = async (): Promise<User | null> => {
     if (!user.value?.id) {
-      // Попробуем из localStorage
       if (process.client) {
         const savedUser = localStorage.getItem('userData')
         if (savedUser) {

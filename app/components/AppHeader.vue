@@ -1,8 +1,6 @@
-<!-- components/AppHeader.vue -->
 <template>
   <nav class="fixed top-0 left-0 right-0 z-50 bg-slate-950/65 backdrop-blur-md border-b border-emerald-500/20">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex items-center justify-between">
-      <!-- Logo -->
       <NuxtLink to="/" @click="closeMobileMenu">
         <div class="flex items-center gap-2 sm:gap-3">
           <div class="relative">
@@ -17,9 +15,7 @@
         </div>
       </NuxtLink>
 
-      <!-- Desktop Menu -->
       <div class="hidden md:flex items-center gap-6 lg:gap-8">
-        <!-- Кнопка "Вернуться в NetCourse" -->
         <button 
           @click="handleBackToMain"
           class="flex items-center gap-2 px-3 py-1.5 bg-slate-800/50 hover:bg-slate-700/50 border border-slate-600 hover:border-emerald-500/40 rounded-lg transition-all group"
@@ -31,7 +27,6 @@
             <span class="text-slate-300 text-sm font-mono">{{ $t('header.backToMain') }}</span>
           </button>
 
-          <!-- Locale Switcher -->
           <div class="flex items-center gap-1">
             <button
                 :class="[
@@ -82,7 +77,6 @@
               </span>
             </button>
 
-            <!-- Profile Dropdown -->
             <Transition
               enter-active-class="transition ease-out duration-100"
               enter-from-class="transform opacity-0 scale-95"
@@ -127,7 +121,6 @@
         </NuxtLink>
       </div>
 
-      <!-- Mobile Menu Button -->
       <button
         class="md:hidden flex flex-col items-center justify-center w-8 h-8 relative"
         @click="toggleMobileMenu"
@@ -154,7 +147,6 @@
       </button>
     </div>
 
-    <!-- Mobile Menu -->
     <Transition
       enter-active-class="transition ease-out duration-200"
       enter-from-class="transform opacity-0 -translate-y-2"
@@ -168,7 +160,6 @@
         class="md:hidden bg-slate-950/95 backdrop-blur-md border-b border-emerald-500/20"
       >
         <div class="px-4 py-6 space-y-4">
-          <!-- Кнопка "Вернуться в NetCourse" в мобильной версии -->
           <button
             @click="handleBackToMain"
             class="flex items-center justify-center gap-2 w-full px-6 py-2.5 bg-slate-800/50 border border-slate-600 hover:border-emerald-500/40 rounded-lg transition-all"
@@ -253,7 +244,6 @@
     </Transition>
   </nav>
 
-  <!-- Profile Menu Overlay -->
   <Transition
     enter-active-class="transition ease-out duration-200"
     enter-from-class="opacity-0"

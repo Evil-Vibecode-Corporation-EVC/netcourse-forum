@@ -1,21 +1,26 @@
-<!-- pages/profile/[id].vue -->
 <template>
   <main class="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 pt-20 pb-20 px-4 sm:px-6 relative overflow-hidden">
-    <!-- Static background -->
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
     <div class="absolute top-1/3 -left-48 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px]"></div>
     <div class="absolute bottom-1/3 -right-48 w-96 h-96 bg-emerald-500/5 rounded-full blur-[100px]"></div>
 
-    <!-- Loading State (без анимации) -->
     <div v-if="loading" class="flex items-center justify-center min-h-[70vh]">
       <div class="text-center">
-        <div class="w-12 h-12 rounded-full border-2 border-emerald-500/30 border-t-emerald-500 mx-auto mb-5"></div>
-        <p class="text-emerald-400/70 font-mono text-sm tracking-wide">{{ $t('profile.loading') }}</p>
+        <div class="relative w-16 h-16 mx-auto mb-6">
+          <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping"></div>
+          <div class="absolute inset-2 rounded-full border-2 border-emerald-500/40 animate-ping" style="animation-delay: 0.3s"></div>
+          <div class="absolute inset-0 rounded-full border-2 border-t-emerald-400 border-emerald-500/10 animate-spin"></div>
+          <div class="absolute inset-4 rounded-full bg-emerald-500/10 flex items-center justify-center">
+            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+            </svg>
+          </div>
+        </div>
+        <p class="text-emerald-400/70 font-mono text-sm animate-pulse tracking-wide">{{ $t('profile.loading') }}</p>
       </div>
     </div>
 
-    <!-- Error State -->
     <div v-else-if="error" class="flex items-center justify-center min-h-[70vh]">
       <div class="text-center max-w-md mx-auto">
         <div class="relative inline-block mb-6">
@@ -34,13 +39,10 @@
       </div>
     </div>
 
-    <!-- Profile Content (без анимации появления) -->
     <div v-else-if="profile" class="max-w-6xl mx-auto relative z-10">
-      <!-- Profile Header -->
       <div class="relative bg-slate-900/70 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8 shadow-2xl shadow-emerald-500/5">
         <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
         <div class="p-6 md:p-8">
-          <!-- Terminal header -->
           <div class="flex items-center gap-2 pb-4 mb-6 border-b border-slate-800/80">
             <div class="flex gap-1.5">
               <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
@@ -51,7 +53,6 @@
           </div>
 
           <div class="flex flex-col lg:flex-row gap-8 items-center lg:items-start">
-            <!-- Avatar Section -->
             <div class="flex flex-col items-center gap-4">
               <div class="relative">
                 <div class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full blur-md opacity-20"></div>
@@ -59,7 +60,6 @@
                   <img v-if="profile.avatarUrl" :src="profile.avatarUrl" class="w-full h-full object-cover" alt="avatar" />
                   <span v-else class="text-5xl text-emerald-400 font-mono font-bold">{{ profile.username?.charAt(0).toUpperCase() }}</span>
                 </div>
-                <!-- Equipped Badge -->
                 <div v-if="profile.equippedBadge" class="absolute -bottom-2 -right-2 w-10 h-10 bg-slate-900 border-2 border-slate-800 rounded-full flex items-center justify-center shadow-lg cursor-help z-10">
                   <img v-if="profile.equippedBadge.imageUrl" :src="profile.equippedBadge.imageUrl" class="w-5 h-5 object-contain" />
                   <span v-else class="text-emerald-400 text-lg">★</span>
@@ -69,7 +69,6 @@
                 </div>
               </div>
 
-              <!-- Social Links -->
               <div v-if="profile.socialLinks?.length" class="flex flex-wrap justify-center gap-2">
                 <a v-for="link in profile.socialLinks" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer"
                   class="p-2.5 rounded-full bg-slate-800/80 border border-slate-700/80 text-slate-400">
@@ -81,7 +80,6 @@
               </div>
             </div>
 
-            <!-- User Info -->
             <div class="flex-1 text-center lg:text-left">
               <div class="mb-4">
                 <h1 class="text-3xl md:text-4xl font-bold bg-gradient-to-r from-white to-emerald-200 bg-clip-text text-transparent font-mono mb-1">{{ profile.username }}</h1>
@@ -90,7 +88,6 @@
 
               <p v-if="profile.bio" class="text-slate-300 text-sm leading-relaxed mb-6 max-w-xl mx-auto lg:mx-0 italic border-l-2 border-emerald-500/30 pl-4">“{{ profile.bio }}”</p>
 
-              <!-- Stats Grid -->
               <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 mb-6">
                 <div class="bg-slate-800/50 rounded-xl p-3 text-center border border-slate-700/50">
                   <div class="flex items-center justify-center gap-1 text-emerald-400 mb-1">
@@ -126,7 +123,6 @@
         </div>
       </div>
 
-      <!-- Badges Section -->
       <div v-if="profile.badges?.length" class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -156,7 +152,6 @@
         </div>
       </div>
 
-      <!-- Certifications -->
       <div v-if="profile.certifications?.length" class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -167,21 +162,21 @@
           <span class="text-slate-400 font-mono text-xs ml-2">certifications</span>
           <span class="ml-auto text-amber-400 text-xs bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">{{ profile.certifications.length }}</span>
         </div>
-        <div class="p-5 grid sm:grid-cols-2 gap-3">
+        <div class="p-4 sm:p-5 grid sm:grid-cols-2 gap-3">
           <div v-for="cert in profile.certifications" :key="cert.id"
-            class="flex items-center gap-4 p-3 bg-gradient-to-r from-slate-800/40 to-slate-800/20 rounded-xl border border-slate-700/50">
-            <div class="w-10 h-10 bg-amber-500/10 border border-amber-500/20 rounded-xl flex items-center justify-center shrink-0">
-              <svg class="w-5 h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
+            class="relative flex items-center gap-4 p-4 bg-gradient-to-br from-slate-800/60 to-slate-800/20 rounded-xl border border-amber-500/20 hover:border-amber-500/40 transition-all group">
+            <div class="absolute top-0 right-0 w-16 h-16 bg-amber-500/5 rounded-bl-3xl rounded-tr-xl pointer-events-none"></div>
+            <div class="w-12 h-12 sm:w-10 sm:h-10 bg-gradient-to-br from-amber-500/20 to-amber-500/5 border border-amber-500/30 rounded-xl flex items-center justify-center shrink-0">
+              <svg class="w-6 sm:w-5 h-6 sm:h-5 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
             </div>
             <div class="min-w-0 flex-1">
               <p class="text-white text-sm font-semibold font-mono truncate">{{ cert.course?.title || $t('profile.course') }}</p>
-              <p class="text-slate-500 text-xs mt-0.5">{{ $t('profile.issued', { date: formatDate(cert.issuedAt) }) }}</p>
+              <p class="text-slate-500 text-xs mt-0.5 font-mono">{{ $t('profile.issued', { date: formatDate(cert.issuedAt) }) }}</p>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- Posts Section -->
       <div class="bg-slate-900/40 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden">
         <div class="flex items-center gap-2 px-6 py-4 border-b border-slate-800/80">
           <div class="flex gap-1.5">
@@ -252,7 +247,7 @@ const fetchProfile = async () => {
   try {
     const data = await apiRequest(`/profiles/${route.params.id}`)
     profile.value = data
-    
+
     if (data.recentPosts && Array.isArray(data.recentPosts)) {
       userPosts.value = data.recentPosts
     } else {
@@ -276,7 +271,7 @@ const fetchUserPosts = async (userId) => {
       const fallback = await apiRequest('/forum/posts?limit=50')
       posts = fallback.data || fallback || []
     }
-    
+
     if (Array.isArray(posts)) {
       userPosts.value = posts.filter(post => post.userId === userId || post.user?.id === userId)
     } else {
@@ -293,7 +288,6 @@ watch(() => route.params.id, fetchProfile)
 </script>
 
 <style scoped>
-/* Без анимаций — только статика */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

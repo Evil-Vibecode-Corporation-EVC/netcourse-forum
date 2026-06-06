@@ -1,4 +1,3 @@
-<!-- components/PostModal.vue -->
 <template>
   <Teleport to="body">
     <Transition name="modal-fade">
@@ -24,7 +23,6 @@
             </h2>
 
             <form @submit.prevent="handleSubmit" class="relative space-y-4">
-              <!-- title -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// title *</label>
                 <input
@@ -36,7 +34,6 @@
                 />
               </div>
 
-              <!-- body -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// body *</label>
                 <textarea
@@ -48,7 +45,6 @@
                 ></textarea>
               </div>
 
-              <!-- Теги -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// tags <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl px-3 sm:px-4 py-2.5 sm:py-3 transition-all">
@@ -83,7 +79,6 @@
                 </div>
               </div>
 
-              <!-- Выбор курса (необязательно) -->
               <div v-if="isAuthenticated">
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// course <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <select
@@ -103,7 +98,6 @@
                 <div v-else-if="completedCourses.length === 0" class="text-xs text-slate-500 mt-1">{{ $t('modal.noCompletedCourses') }}</div>
               </div>
 
-              <!-- Оценка курса (появляется только когда выбран курс) -->
               <div v-if="form.courseId && isAuthenticated" class="p-3 sm:p-4 bg-slate-800/50 border border-slate-700/50 rounded-xl">
                 <span class="block text-slate-400 font-mono text-xs mb-2">{{ $t('modal.courseRating') }}</span>
                 <div class="flex items-center gap-1 flex-wrap">
@@ -146,11 +140,9 @@
                 </div>
               </div>
 
-              <!-- Вложения -->
               <div>
                 <label class="block text-slate-400 font-mono text-xs mb-1.5">// attachments <span class="text-slate-600">{{ $t('modal.optional') }}</span></label>
                 <div class="bg-slate-800 border border-slate-700 focus-within:border-emerald-500/60 rounded-xl p-2.5 sm:p-3 transition-all">
-                  <!-- Существующие вложения (при редактировании) -->
                   <div v-if="isEdit && editPost?.attachments?.length" class="flex flex-wrap gap-2 mb-3">
                     <div
                       v-for="att in editPost.attachments"

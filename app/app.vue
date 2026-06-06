@@ -1,4 +1,3 @@
-<!-- app.vue -->
 <template>
   <NuxtLayout>
     <NuxtPage />
@@ -6,5 +5,4 @@
 </template>
 
 <script setup lang="ts">
-// No additional logic needed
 </script>

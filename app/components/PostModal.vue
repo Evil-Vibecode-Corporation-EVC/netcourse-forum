@@ -279,19 +279,11 @@ const loadCompletedCourses = async () => {
   if (!isAuthenticated.value) return
   loadingCourses.value = true
   try {
-    const userData = await apiRequest(`/users/${user.value.id}`)
-    const completed = (userData.progresses || [])
-      .filter(p => p.status === 'completed')
-      .map(p => p.courseId)
-
-    if (completed.length) {
-      const courses = await Promise.all(
-        completed.map(courseId => courseAPI.getById(courseId))
-      )
-      completedCourses.value = courses
-    } else {
-      completedCourses.value = []
-    }
+    const certs = await apiRequest('/certifications/me')
+    const courses = (certs || [])
+      .map(cert => cert.course)
+      .filter(Boolean)
+    completedCourses.value = courses
   } catch {
     completedCourses.value = []
   } finally {

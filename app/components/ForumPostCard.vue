@@ -1,15 +1,14 @@
 <template>
   <article
     :class="[
-      'group relative bg-slate-900 border rounded-xl p-5 transition-all duration-300 cursor-pointer',
+      'group relative bg-slate-900 rounded-xl p-5 transition-all duration-300 cursor-pointer',
       isCoursePost
-        ? 'border-emerald-500/70 hover:border-emerald-400 shadow-emerald-500/10 hover:shadow-emerald-500/15'
-        : 'border-slate-700 hover:border-emerald-500/25 shadow-slate-950/20 hover:shadow-emerald-500/10'
+        ? 'border-2 border-emerald-500/70 hover:border-emerald-400 shadow-emerald-500/10 hover:shadow-emerald-500/15'
+        : 'border border-slate-700 hover:border-emerald-500/25 shadow-slate-950/20 hover:shadow-emerald-500/10'
     ]"
     @click="$emit('click')"
   >
-    <div v-if="isCoursePost" class="absolute left-0 top-2 bottom-2 w-0.5 bg-emerald-400 rounded-full"></div>
-    <div
+    <div v-if="!isCoursePost"
       :class="[
         'absolute top-0 right-0 w-6 h-6 border-t border-r rounded-tr-xl transition-all',
         isCoursePost ? 'border-emerald-400 group-hover:border-emerald-300' : 'border-emerald-500/30 group-hover:border-emerald-500/60'
@@ -37,13 +36,11 @@
           <span class="text-slate-600 font-mono text-xs">·</span>
           <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
           <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
-        </div>
-        <div v-if="isCoursePost" class="flex items-center gap-1.5 mt-0.5">
-          <span class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold leading-none">
-            {{ $t('forum.badge') }}
-          </span>
-          <span v-if="courseName" class="text-emerald-500/70 font-mono text-xs truncate max-w-[200px]">
-            {{ courseName }}
+          <span
+            v-if="isCoursePost"
+            class="ml-1 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold whitespace-nowrap"
+          >
+            {{ $t('forum.badge') }}{{ courseName ? ': ' + courseName : '' }}
           </span>
         </div>
       </div>

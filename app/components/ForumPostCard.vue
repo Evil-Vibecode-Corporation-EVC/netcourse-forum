@@ -38,7 +38,7 @@
           <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
           <span
             v-if="isCoursePost"
-            class="ml-3 px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-xs font-bold whitespace-nowrap"
+            class="ml-2 sm:ml-3 px-1.5 sm:px-2.5 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] sm:text-xs font-bold leading-tight whitespace-nowrap"
           >
             {{ $t('forum.badge') }}{{ courseName ? ': ' + courseName : '' }}
           </span>

@@ -8,7 +8,8 @@
       "allCourses": "Барлық курстар",
       "emptyWithTag": "// #{tag} тегі бар жазбалар жоқ",
       "emptyPrompt": "Талқылауды бірінші болып бастаңыз!",
-      "reset": "тазалау"
+      "reset": "тазалау",
+      "moreImages": "тағы"
     },
     "post": {
       "courseLabel": "курс",

@@ -16,98 +16,81 @@
     ></div>
 
 
-    <div class="flex items-start gap-3 mb-3">
-      <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
-        <div
-          class="w-9 h-9 rounded-full border flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer"
-          :class="isCoursePost ? 'border-emerald-400 bg-emerald-500/10' : 'border-emerald-500/30 bg-emerald-500/15'"
-        >
-          <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
-          <span v-else :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-bold">
-            {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
-          </span>
-        </div>
-      </UserTooltip>
-
+    <div class="flex gap-4 sm:gap-6">
       <div class="flex-1 min-w-0">
-        <div class="flex items-center gap-2 flex-wrap">
-          <span :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-semibold">
-            {{ post.user?.username || 'anonymous' }}
-          </span>
-          <span class="text-slate-600 font-mono text-xs">·</span>
-          <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
-          <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
+        <div class="flex items-start gap-3 mb-3">
+          <UserTooltip :user-id="post.user?.id || post.userId" @click.stop>
+            <div
+              class="w-9 h-9 rounded-full border flex items-center justify-center overflow-hidden shrink-0 mt-0.5 hover:border-emerald-500/60 transition-all cursor-pointer"
+              :class="isCoursePost ? 'border-emerald-400 bg-emerald-500/10' : 'border-emerald-500/30 bg-emerald-500/15'"
+            >
+              <img v-if="post.user?.avatarUrl" :src="post.user.avatarUrl" class="w-full h-full object-cover" />
+              <span v-else :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-bold">
+                {{ post.user?.username?.charAt(0).toUpperCase() || '?' }}
+              </span>
+            </div>
+          </UserTooltip>
 
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 flex-wrap">
+              <span :class="isCoursePost ? 'text-emerald-400' : 'text-emerald-400'" class="font-mono text-sm font-semibold">
+                {{ post.user?.username || 'anonymous' }}
+              </span>
+              <span class="text-slate-600 font-mono text-xs">·</span>
+              <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
+              <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
+
+              <span
+                v-if="isCoursePost"
+                class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
+              >
+                {{ $t('forum.badge') }}
+              </span>
+            </div>
+          </div>
+
+          <div v-if="canEdit" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" @click.stop>
+            <button
+              @click="$emit('edit', post)"
+              class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 transition-all"
+              :title="$t('forum.editTooltip')"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button
+              @click="$emit('delete', post)"
+              class="p-1.5 rounded-lg bg-slate-800 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/40 text-slate-400 hover:text-red-400 transition-all"
+              :title="$t('forum.deleteTooltip')"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <h3 :class="['text-white font-semibold text-base mb-2 transition-colors leading-snug line-clamp-2', isCoursePost ? 'group-hover:text-emerald-300' : 'group-hover:text-emerald-400']">
+          {{ post.title }}
+        </h3>
+
+        <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-3">
+          {{ post.body }}
+        </p>
+
+        <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
           <span
-            v-if="isCoursePost"
-            class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
+            v-for="tag in post.tags"
+            :key="tag"
+            class="px-2 py-0.5 border rounded text-emerald-400 font-mono text-xs transition-all cursor-pointer"
+            :class="
+              tag === 'курс' || tag === 'course'
+                ? 'bg-emerald-500/30 border-emerald-400 text-emerald-300 hover:bg-emerald-500/50'
+                : 'bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20'
+            "
           >
-            {{ $t('forum.badge') }}
+            #{{ tag }}
           </span>
         </div>
-        <div v-if="courseName" class="mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-400/30 bg-emerald-500/10 text-emerald-100 font-mono text-xs uppercase tracking-[0.12em]">
-          {{ courseName }}
-        </div>
-      </div>
 
-      <div v-if="canEdit" class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity" @click.stop>
-        <button
-          @click="$emit('edit', post)"
-          class="p-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 border border-slate-700 hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 transition-all"
-          :title="$t('forum.editTooltip')"
-        >
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        </button>
-        <button
-          @click="$emit('delete', post)"
-          class="p-1.5 rounded-lg bg-slate-800 hover:bg-red-900/40 border border-slate-700 hover:border-red-500/40 text-slate-400 hover:text-red-400 transition-all"
-          :title="$t('forum.deleteTooltip')"
-        >
-          <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-        </button>
-      </div>
-    </div>
-
-    <h3 :class="['text-white font-semibold text-base mb-2 transition-colors leading-snug line-clamp-2', isCoursePost ? 'group-hover:text-emerald-300' : 'group-hover:text-emerald-400']">
-      {{ post.title }}
-    </h3>
-
-    <p class="text-slate-400 text-sm leading-relaxed line-clamp-3 mb-3">
-      {{ post.body }}
-    </p>
-
-    <div v-if="imageAttachments.length" class="flex gap-2 mb-3" @click.stop>
-      <div
-        v-for="att in imageAttachments.slice(0, 4)"
-        :key="att.id"
-        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border border-slate-700 shrink-0"
-      >
-        <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
-      </div>
-      <div
-        v-if="imageAttachments.length > 4"
-        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border border-slate-700 bg-slate-800 flex items-center justify-center shrink-0"
-      >
-        <span class="text-slate-400 font-mono text-xs">+{{ imageAttachments.length - 4 }}</span>
-      </div>
-    </div>
-
-    <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
-      <span
-        v-for="tag in post.tags"
-        :key="tag"
-        class="px-2 py-0.5 border rounded text-emerald-400 font-mono text-xs transition-all cursor-pointer"
-        :class="
-          tag === 'курс' || tag === 'course'
-            ? 'bg-emerald-500/30 border-emerald-400 text-emerald-300 hover:bg-emerald-500/50'
-            : 'bg-emerald-500/10 border-emerald-500/20 hover:bg-emerald-500/20'
-        "
-      >
-        #{{ tag }}
-      </span>
-    </div>
-
-    <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
+        <div class="flex items-center gap-4 text-xs font-mono text-slate-500">
       <span class="flex items-center gap-1.5">
         <svg class="w-3.5 h-3.5" :class="isCoursePost ? 'text-emerald-500' : 'text-slate-600'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         {{ post.replies?.length || 0 }} replies
@@ -141,6 +124,41 @@
         <span class="w-1.5 h-1.5 rounded-full" :class="isCoursePost ? 'bg-emerald-500' : 'bg-emerald-500/60'"></span>
         #{{ post.id }}
       </span>
+    </div>
+      </div>
+
+      <div v-if="imageAttachments.length" class="hidden sm:flex flex-col gap-2 shrink-0" @click.stop>
+        <div
+          v-for="att in imageAttachments.slice(0, 2)"
+          :key="att.id"
+          class="w-28 h-28 rounded-xl overflow-hidden border border-slate-700 group/img relative"
+        >
+          <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover transition-transform duration-300 group-hover/img:scale-110" loading="lazy" />
+          <div class="absolute inset-0 bg-black/0 group-hover/img:bg-black/30 transition-all"></div>
+        </div>
+        <div
+          v-if="imageAttachments.length > 2"
+          class="w-28 h-9 rounded-lg border border-slate-700 bg-slate-800/80 flex items-center justify-center"
+        >
+          <span class="text-slate-400 font-mono text-xs">+{{ imageAttachments.length - 2 }} {{ $t('forum.home.moreImages') }}</span>
+        </div>
+      </div>
+
+      <div v-if="imageAttachments.length" class="flex sm:hidden gap-2 mt-3" @click.stop>
+        <div
+          v-for="att in imageAttachments.slice(0, 3)"
+          :key="att.id"
+          class="w-16 h-16 rounded-lg overflow-hidden border border-slate-700 shrink-0"
+        >
+          <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+        </div>
+        <div
+          v-if="imageAttachments.length > 3"
+          class="w-16 h-16 rounded-lg border border-slate-700 bg-slate-800 flex items-center justify-center shrink-0"
+        >
+          <span class="text-slate-400 font-mono text-xs">+{{ imageAttachments.length - 3 }}</span>
+        </div>
+      </div>
     </div>
   </article>
 </template>

@@ -8,7 +8,8 @@
       "allCourses": "Все курсы",
       "emptyWithTag": "// нет постов с тегом #{tag}",
       "emptyPrompt": "Будьте первым, кто начнёт обсуждение!",
-      "reset": "сбросить"
+      "reset": "сбросить",
+      "moreImages": "ещё"
     },
     "post": {
       "courseLabel": "курс",

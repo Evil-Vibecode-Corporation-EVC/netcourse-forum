@@ -56,22 +56,55 @@
             {{ post.body }}
           </div>
 
-          <div v-if="post.attachments?.length" class="flex flex-wrap gap-4 mb-5">
-            <template v-for="att in post.attachments" :key="att.id">
-              <div v-if="att.mimeType?.startsWith('image/')" class="group relative">
-                <a :href="att.r2Key" target="_blank" class="block group relative rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all">
-                  <img :src="att.r2Key" :alt="att.fileName" class="max-h-80 w-full object-contain bg-slate-800/50" loading="lazy" />
-                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                    <svg class="w-10 h-10 text-white/0 group-hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                  </div>
-                </a>
-                <span class="text-slate-500 font-mono text-xs mt-1.5 block truncate max-w-[200px] sm:max-w-[300px]">{{ att.fileName }}</span>
-              </div>
-              <div v-else class="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg group hover:border-slate-600 transition-all">
-                <span class="text-slate-500 text-xs">📎</span>
-                <a :href="att.r2Key" target="_blank" class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px] sm:max-w-[200px] transition-colors">{{ att.fileName }}</a>
-              </div>
-            </template>
+          <div v-if="imageAttachments.length" class="mb-5">
+            <div v-if="imageAttachments.length === 1" class="max-h-96 rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all">
+              <a :href="imageAttachments[0].r2Key" target="_blank" class="block relative">
+                <img :src="imageAttachments[0].r2Key" :alt="imageAttachments[0].fileName" class="w-full h-full object-cover max-h-96" loading="lazy" />
+                <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center">
+                  <svg class="w-10 h-10 text-white/0 hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </div>
+              </a>
+            </div>
+            <div v-else-if="imageAttachments.length === 2" class="grid grid-cols-2 gap-2">
+              <a v-for="att in imageAttachments" :key="att.id" :href="att.r2Key" target="_blank" class="relative rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all aspect-square">
+                <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+                <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center">
+                  <svg class="w-8 h-8 text-white/0 hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </div>
+              </a>
+            </div>
+            <div v-else-if="imageAttachments.length === 3" class="grid grid-cols-2 gap-2">
+              <a :href="imageAttachments[0].r2Key" target="_blank" class="relative row-span-2 rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all min-h-[300px]">
+                <img :src="imageAttachments[0].r2Key" :alt="imageAttachments[0].fileName" class="w-full h-full object-cover absolute inset-0" loading="lazy" />
+                <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center z-10">
+                  <svg class="w-8 h-8 text-white/0 hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </div>
+              </a>
+              <a v-for="att in imageAttachments.slice(1, 3)" :key="att.id" :href="att.r2Key" target="_blank" class="relative rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all aspect-square">
+                <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+                <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center">
+                  <svg class="w-8 h-8 text-white/0 hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </div>
+              </a>
+            </div>
+            <div v-else class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              <a v-for="(att, idx) in imageAttachments.slice(0, 5)" :key="att.id" :href="att.r2Key" target="_blank" class="relative rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all aspect-square">
+                <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+                <div v-if="idx === 4 && imageAttachments.length > 5" class="absolute inset-0 bg-slate-900/80 flex items-center justify-center z-10 backdrop-blur-sm">
+                  <span class="text-white font-mono text-2xl font-bold">+{{ imageAttachments.length - 5 }}</span>
+                </div>
+                <div class="absolute inset-0 bg-black/0 hover:bg-black/30 transition-all flex items-center justify-center" :class="idx === 4 && imageAttachments.length > 5 ? 'hidden' : ''">
+                  <svg class="w-8 h-8 text-white/0 hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          <div v-if="documentAttachments.length" class="flex flex-wrap gap-2 mb-5">
+            <a v-for="att in documentAttachments" :key="att.id" :href="att.r2Key" target="_blank" class="flex items-center gap-2 px-3 py-2 bg-slate-800 border border-slate-700 rounded-lg hover:border-emerald-500/40 hover:text-emerald-400 text-slate-400 font-mono text-xs transition-all group">
+              <svg class="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span class="truncate max-w-[150px]">{{ att.fileName }}</span>
+            </a>
           </div>
 
           <div
@@ -269,23 +302,22 @@
 
                   <div v-if="editingReplyId !== reply.id">
                     <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words">{{ reply.body }}</p>
-                    <div v-if="reply.attachments?.length" class="flex flex-wrap gap-3 mt-3">
-                      <template v-for="att in reply.attachments" :key="att.id">
-                        <div v-if="att.mimeType?.startsWith('image/')" class="group relative">
-                          <a :href="att.r2Key" target="_blank" class="block group relative rounded-lg overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all">
-                            <img :src="att.r2Key" :alt="att.fileName" class="max-h-48 w-full object-contain bg-slate-800/50" loading="lazy" />
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
-                              <svg class="w-8 h-8 text-white/0 group-hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-                            </div>
-                          </a>
-                          <span class="text-slate-500 font-mono text-xs mt-1 block truncate max-w-[150px] sm:max-w-[200px]">{{ att.fileName }}</span>
-                        </div>
-                        <div v-else class="flex items-center gap-2 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg">
-                          <span class="text-slate-500 text-xs">📎</span>
-                          <a :href="att.r2Key" target="_blank" class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[100px] sm:max-w-[150px] transition-colors">{{ att.fileName }}</a>
-                        </div>
-                      </template>
-                    </div>
+                    <template v-if="reply.attachments?.length">
+                      <div v-if="replyImageAttachments(reply).length" class="flex flex-wrap gap-2 mt-3">
+                        <a v-for="att in replyImageAttachments(reply).slice(0, 4)" :key="att.id" :href="att.r2Key" target="_blank" class="relative w-24 h-24 rounded-lg overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all group">
+                          <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+                          <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                            <svg class="w-5 h-5 text-white/0 group-hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                          </div>
+                        </a>
+                      </div>
+                      <div v-if="replyDocumentAttachments(reply).length" class="flex flex-wrap gap-2 mt-2">
+                        <a v-for="att in replyDocumentAttachments(reply)" :key="att.id" :href="att.r2Key" target="_blank" class="flex items-center gap-1.5 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg hover:border-emerald-500/40 text-slate-400 hover:text-emerald-400 font-mono text-xs transition-all">
+                          <svg class="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                          <span class="truncate max-w-[120px]">{{ att.fileName }}</span>
+                        </a>
+                      </div>
+                    </template>
                     <div class="mt-3">
                       <button
                         @click="toggleReplyLike(reply)"
@@ -397,12 +429,28 @@ const course = ref(null)
 const courseCompleted = ref(false)
 const myRating = ref(null)
 
+const imageAttachments = computed(() => {
+  return (post.value?.attachments || []).filter(att => att.mimeType?.startsWith('image/'))
+})
+
+const documentAttachments = computed(() => {
+  return (post.value?.attachments || []).filter(att => !att.mimeType?.startsWith('image/'))
+})
+
 const canEditPost = computed(() => {
   if (!user.value || !post.value) return false
   return user.value.id === post.value.userId || user.value.role === 'ADMIN'
 })
 
 const isCoursePost = computed(() => !!post.value?.courseId)
+
+const replyImageAttachments = (reply) => {
+  return (reply.attachments || []).filter(att => att.mimeType?.startsWith('image/'))
+}
+
+const replyDocumentAttachments = (reply) => {
+  return (reply.attachments || []).filter(att => !att.mimeType?.startsWith('image/'))
+}
 
 const canEditReply = (reply) => {
   if (!user.value) return false

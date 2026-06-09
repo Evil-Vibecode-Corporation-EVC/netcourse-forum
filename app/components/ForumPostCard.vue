@@ -8,6 +8,7 @@
     ]"
     @click="$emit('click')"
   >
+    <div v-if="isCoursePost" class="absolute left-0 top-2 bottom-2 w-0.5 bg-emerald-400 rounded-full"></div>
     <div
       :class="[
         'absolute top-0 right-0 w-6 h-6 border-t border-r rounded-tr-xl transition-all',
@@ -36,12 +37,13 @@
           <span class="text-slate-600 font-mono text-xs">·</span>
           <span class="text-slate-500 font-mono text-xs">{{ formatDate(post.createdAt) }}</span>
           <span v-if="post.updatedAt !== post.createdAt" class="text-slate-600 font-mono text-xs italic">(edited)</span>
-
-          <span
-            v-if="isCoursePost"
-            class="ml-1 px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold"
-          >
+        </div>
+        <div v-if="isCoursePost" class="flex items-center gap-1.5 mt-0.5">
+          <span class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-400 rounded-full text-emerald-300 font-mono text-[10px] font-bold leading-none">
             {{ $t('forum.badge') }}
+          </span>
+          <span v-if="courseName" class="text-emerald-500/70 font-mono text-xs truncate max-w-[200px]">
+            {{ courseName }}
           </span>
         </div>
       </div>
@@ -194,6 +196,11 @@ const isCoursePost = computed(() => {
 const canEdit = computed(() => {
   if (!props.currentUser || !props.post) return false
   return props.currentUser.id === props.post.userId || props.currentUser.role === 'ADMIN'
+})
+
+const courseName = computed(() => {
+  if (!props.post.courseId) return null
+  return props.courseMap?.[props.post.courseId]?.title || ''
 })
 
 const toggleLike = async () => {

@@ -76,6 +76,22 @@
       {{ post.body }}
     </p>
 
+    <div v-if="imageAttachments.length" class="flex gap-2 mb-3" @click.stop>
+      <div
+        v-for="att in imageAttachments.slice(0, 4)"
+        :key="att.id"
+        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg overflow-hidden border border-slate-700 shrink-0"
+      >
+        <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div
+        v-if="imageAttachments.length > 4"
+        class="w-16 h-16 sm:w-20 sm:h-20 rounded-lg border border-slate-700 bg-slate-800 flex items-center justify-center shrink-0"
+      >
+        <span class="text-slate-400 font-mono text-xs">+{{ imageAttachments.length - 4 }}</span>
+      </div>
+    </div>
+
     <div v-if="post.tags?.length" class="flex flex-wrap gap-1.5 mb-3" @click.stop>
       <span
         v-for="tag in post.tags"
@@ -155,6 +171,10 @@ const localLikes = ref(props.post.likesCount ?? 0)
 
 const { apiRequest } = useApi()
 const { $t } = useNuxtApp()
+
+const imageAttachments = computed(() => {
+  return (props.post.attachments || []).filter(att => att.mimeType?.startsWith('image/'))
+})
 
 const isCoursePost = computed(() => {
   const tags = props.post.tags || []

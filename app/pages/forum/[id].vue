@@ -56,25 +56,22 @@
             {{ post.body }}
           </div>
 
-          <div v-if="post.attachments?.length" class="flex flex-wrap gap-2 mb-5">
-            <div
-              v-for="att in post.attachments"
-              :key="att.id"
-              class="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg group hover:border-slate-600 transition-all"
-            >
-              <template v-if="att.mimeType?.startsWith('image/')">
-                <a :href="att.r2Key" target="_blank" class="flex items-center gap-2">
-                  <div class="w-8 h-8 rounded overflow-hidden shrink-0">
-                    <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
+          <div v-if="post.attachments?.length" class="flex flex-wrap gap-4 mb-5">
+            <template v-for="att in post.attachments" :key="att.id">
+              <div v-if="att.mimeType?.startsWith('image/')" class="group relative">
+                <a :href="att.r2Key" target="_blank" class="block group relative rounded-xl overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all">
+                  <img :src="att.r2Key" :alt="att.fileName" class="max-h-80 w-full object-contain bg-slate-800/50" loading="lazy" />
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                    <svg class="w-10 h-10 text-white/0 group-hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   </div>
-                  <span class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[100px] sm:max-w-[150px] transition-colors">{{ att.fileName }}</span>
                 </a>
-              </template>
-              <template v-else>
+                <span class="text-slate-500 font-mono text-xs mt-1.5 block truncate max-w-[200px] sm:max-w-[300px]">{{ att.fileName }}</span>
+              </div>
+              <div v-else class="flex items-center gap-2 px-3 py-1.5 bg-slate-800 border border-slate-700 rounded-lg group hover:border-slate-600 transition-all">
                 <span class="text-slate-500 text-xs">📎</span>
                 <a :href="att.r2Key" target="_blank" class="text-slate-400 font-mono text-xs hover:text-emerald-400 truncate max-w-[120px] sm:max-w-[200px] transition-colors">{{ att.fileName }}</a>
-              </template>
-            </div>
+              </div>
+            </template>
           </div>
 
           <div
@@ -272,25 +269,22 @@
 
                   <div v-if="editingReplyId !== reply.id">
                     <p class="text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-wrap break-words">{{ reply.body }}</p>
-                    <div v-if="reply.attachments?.length" class="flex flex-wrap gap-2 mt-3">
-                      <div
-                        v-for="att in reply.attachments"
-                        :key="att.id"
-                        class="flex items-center gap-2 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg"
-                      >
-                        <template v-if="att.mimeType?.startsWith('image/')">
-                          <a :href="att.r2Key" target="_blank" class="flex items-center gap-1">
-                            <div class="w-6 h-6 rounded overflow-hidden shrink-0">
-                              <img :src="att.r2Key" :alt="att.fileName" class="w-full h-full object-cover" />
+                    <div v-if="reply.attachments?.length" class="flex flex-wrap gap-3 mt-3">
+                      <template v-for="att in reply.attachments" :key="att.id">
+                        <div v-if="att.mimeType?.startsWith('image/')" class="group relative">
+                          <a :href="att.r2Key" target="_blank" class="block group relative rounded-lg overflow-hidden border border-slate-700 hover:border-emerald-500/40 transition-all">
+                            <img :src="att.r2Key" :alt="att.fileName" class="max-h-48 w-full object-contain bg-slate-800/50" loading="lazy" />
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-all flex items-center justify-center">
+                              <svg class="w-8 h-8 text-white/0 group-hover:text-white/80 transition-all" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                             </div>
-                            <span class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[80px] sm:max-w-[120px] transition-colors">{{ att.fileName }}</span>
                           </a>
-                        </template>
-                        <template v-else>
+                          <span class="text-slate-500 font-mono text-xs mt-1 block truncate max-w-[150px] sm:max-w-[200px]">{{ att.fileName }}</span>
+                        </div>
+                        <div v-else class="flex items-center gap-2 px-2 py-1 bg-slate-800 border border-slate-700 rounded-lg">
                           <span class="text-slate-500 text-xs">📎</span>
                           <a :href="att.r2Key" target="_blank" class="text-slate-500 font-mono text-xs hover:text-emerald-400 truncate max-w-[100px] sm:max-w-[150px] transition-colors">{{ att.fileName }}</a>
-                        </template>
-                      </div>
+                        </div>
+                      </template>
                     </div>
                     <div class="mt-3">
                       <button

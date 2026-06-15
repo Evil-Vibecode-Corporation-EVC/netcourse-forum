@@ -74,13 +74,12 @@
                     {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
                   </span>
                 </div>
-                <div
-                  v-if="equippedBadge"
-                  class="absolute -bottom-0.5 -right-0.5 w-[18px] h-[18px] rounded-full bg-slate-950 border-2 border-emerald-500/30 flex items-center justify-center z-10 shadow-sm"
-                >
-                  <img v-if="equippedBadge.imageUrl" :src="equippedBadge.imageUrl" :alt="equippedBadge.name" class="w-3 h-3 object-contain" />
-                  <span v-else class="text-emerald-400 text-[7px]">★</span>
-                </div>
+                <img
+                  v-if="equippedBadge?.imageUrl"
+                  :src="equippedBadge.imageUrl"
+                  :alt="equippedBadge.name"
+                  class="absolute -bottom-1 -right-1 w-5 h-5 object-contain z-10"
+                />
               </div>
               <span class="text-slate-300 text-sm font-mono hidden lg:block max-w-[120px] truncate">
                 {{ currentUser?.username }}
@@ -222,13 +221,12 @@
                     {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
                   </span>
                 </div>
-                <div
-                  v-if="equippedBadge"
-                  class="absolute -bottom-0.5 -right-0.5 w-[20px] h-[20px] rounded-full bg-slate-950 border-2 border-emerald-500/30 flex items-center justify-center z-10 shadow-sm"
-                >
-                  <img v-if="equippedBadge.imageUrl" :src="equippedBadge.imageUrl" :alt="equippedBadge.name" class="w-3.5 h-3.5 object-contain" />
-                  <span v-else class="text-emerald-400 text-[8px]">★</span>
-                </div>
+                <img
+                  v-if="equippedBadge?.imageUrl"
+                  :src="equippedBadge.imageUrl"
+                  :alt="equippedBadge.name"
+                  class="absolute -bottom-1 -right-1 w-5 h-5 object-contain z-10"
+                />
               </div>
               <span class="text-slate-300 font-mono text-sm sm:text-base max-w-[150px] truncate">
                 {{ currentUser?.username }}

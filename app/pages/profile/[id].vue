@@ -46,13 +46,8 @@
                   <img v-if="profile.avatarUrl" :src="profile.avatarUrl" class="w-full h-full object-cover" alt="avatar" />
                   <span v-else class="text-5xl text-emerald-400 font-mono font-bold">{{ profile.username?.charAt(0).toUpperCase() }}</span>
                 </div>
-                <div v-if="profile.equippedBadge" class="absolute -bottom-2 -right-2 w-10 h-10 bg-slate-900 border-2 border-slate-800 rounded-full flex items-center justify-center shadow-lg cursor-help z-10">
-                  <img v-if="profile.equippedBadge.imageUrl" :src="profile.equippedBadge.imageUrl" class="w-5 h-5 object-contain" />
-                  <span v-else class="text-emerald-400 text-lg">★</span>
-                  <div class="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 pointer-events-none whitespace-nowrap z-20">
-                    <div class="bg-slate-800 border border-emerald-500/40 rounded-lg px-3 py-1.5 font-mono text-xs text-emerald-300 shadow-xl backdrop-blur-sm">{{ profile.equippedBadge.name }}</div>
-                  </div>
-                </div>
+                <img v-if="profile.equippedBadge?.imageUrl" :src="profile.equippedBadge.imageUrl" :alt="profile.equippedBadge.name"
+                  class="absolute -bottom-2 -right-2 w-10 h-10 object-contain z-10 cursor-help" />
               </div>
 
               <div v-if="profile.socialLinks?.length" class="flex flex-wrap justify-center gap-2">

@@ -35,6 +35,7 @@ export const useAuth = () => {
 
       if (savedToken && savedUser) {
         try {
+          token.value = savedToken
           const parsed = JSON.parse(savedUser)
           user.value = normalizeUser(parsed)
         } catch (error) {

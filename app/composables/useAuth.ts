@@ -20,6 +20,14 @@ export const useAuth = () => {
   const token = useState<string | null>('auth:token', () => null)
   const loading = useState<boolean>('auth:loading', () => false)
 
+  const normalizeUser = (data: any): any => {
+    if (!data) return data
+    return {
+      ...data,
+      avatarUrl: data.avatarUrl || data.avatar_url
+    }
+  }
+
   const initialize = () => {
     if (process.client) {
       const savedToken = localStorage.getItem('authToken')
@@ -27,8 +35,8 @@ export const useAuth = () => {
 
       if (savedToken && savedUser) {
         try {
-          token.value = savedToken
-          user.value = JSON.parse(savedUser)
+          const parsed = JSON.parse(savedUser)
+          user.value = normalizeUser(parsed)
         } catch (error) {
           console.error('Error parsing saved user data:', error)
           logout()
@@ -64,6 +72,8 @@ export const useAuth = () => {
           avatarUrl: response.avatarUrl || response.avatar_url
         }
       }
+
+      userData = normalizeUser(userData)
 
       token.value = authToken
       user.value = userData
@@ -101,6 +111,8 @@ export const useAuth = () => {
             avatarUrl: response.avatarUrl || response.avatar_url
           }
         }
+
+        userData = normalizeUser(userData)
 
         token.value = authToken
         user.value = userData
@@ -176,11 +188,12 @@ export const useAuth = () => {
     
     try {
       const response = await apiRequest(`/users/${user.value.id}`)
-      user.value = response
+      const normalized = normalizeUser(response)
+      user.value = normalized
       if (process.client) {
-        localStorage.setItem('userData', JSON.stringify(response))
+        localStorage.setItem('userData', JSON.stringify(normalized))
       }
-      return response
+      return normalized
     } catch (error) {
       console.error('Failed to refresh user:', error)
       return null

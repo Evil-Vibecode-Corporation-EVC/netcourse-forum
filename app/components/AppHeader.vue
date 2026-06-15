@@ -70,7 +70,7 @@
                     class="w-full h-full object-cover"
                     @error="avatarError = true"
                   />
-                  <span v-if="!currentUser?.avatarUrl || avatarError" class="text-sm text-emerald-500 font-mono font-bold">
+                  <span v-else class="text-sm text-emerald-500 font-mono font-bold">
                     {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
                   </span>
                 </div>
@@ -217,7 +217,7 @@
                     class="w-full h-full object-cover"
                     @error="avatarError = true"
                   />
-                  <span v-if="!currentUser?.avatarUrl || avatarError" class="text-lg text-emerald-500 font-mono font-bold">
+                  <span v-else class="text-lg text-emerald-500 font-mono font-bold">
                     {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
                   </span>
                 </div>
@@ -282,8 +282,10 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, navigateTo } from '#app'
 import { useAuth } from '~/composables/useAuth'
+import { useApi } from '~/composables/useApi'
 
 const { user, isAuthenticated, logout } = useAuth()
+const { apiRequest } = useApi()
 
 const isMobileMenuOpen = ref(false)
 const isProfileMenuOpen = ref(false)
@@ -301,10 +303,46 @@ const loadEquippedBadge = () => {
   } catch { equippedBadge.value = null }
 }
 
+const fetchEquippedBadge = async () => {
+  if (!isAuthenticated.value || !process.client) return
+  try {
+    let badge = null
+    try {
+      badge = await apiRequest('/badges/equipped')
+    } catch {
+      const badges = await apiRequest('/badges/me')
+      if (Array.isArray(badges)) {
+        badge = badges.find(b => b.isEquipped) || badges.find(b => b.equipped)
+        if (!badge) {
+          const equippedFromProfile = await apiRequest('/profiles/me')
+          badge = equippedFromProfile?.equippedBadge || null
+        }
+      }
+    }
+    if (badge) {
+      const badgeData = badge.badge || badge
+      equippedBadge.value = {
+        id: badgeData.id,
+        imageUrl: badgeData.imageUrl,
+        name: badgeData.name
+      }
+      localStorage.setItem('equippedBadge', JSON.stringify(equippedBadge.value))
+    } else if (!equippedBadge.value) {
+      loadEquippedBadge()
+    }
+  } catch {
+    loadEquippedBadge()
+  }
+}
+
 onMounted(() => {
   loadEquippedBadge()
+  fetchEquippedBadge()
   if (process.client) {
-    window.addEventListener('badge-equipped', loadEquippedBadge)
+    window.addEventListener('badge-equipped', () => {
+      loadEquippedBadge()
+      fetchEquippedBadge()
+    })
   }
 })
 
@@ -317,6 +355,7 @@ onUnmounted(() => {
 watch(isAuthenticated, () => {
   avatarError.value = false
   loadEquippedBadge()
+  fetchEquippedBadge()
 })
 
 const route = useRoute()

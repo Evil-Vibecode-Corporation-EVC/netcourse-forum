@@ -105,6 +105,16 @@
     "alreadyHaveAccount": "Аккаунтыңыз бар ма?",
     "registerSuccess": "Аккаунт жасалды! Қайта бағытталуда...",
     "registerError": "Тіркеу қатесі",
+    "passwordRules": {
+      "minLength": "Кемінде 8 символ",
+      "hasUpper": "Бас әріп",
+      "hasSpecial": "Цифр немесе арнайы таңба"
+    },
+    "passwordStrength": {
+      "weak": "әлсіз",
+      "medium": "орташа",
+      "strong": "күшті"
+    },
     "noToken": "Сервер авторизация токенін қайтармады",
     "registerRedirect": "Тіркеу сәтті! Жүйеге кіріңіз."
   },

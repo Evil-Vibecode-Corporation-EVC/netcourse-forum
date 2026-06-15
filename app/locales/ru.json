@@ -106,6 +106,16 @@
     "alreadyHaveAccount": "Уже есть аккаунт?",
     "registerSuccess": "Аккаунт создан! Перенаправляем...",
     "registerError": "Ошибка регистрации",
+    "passwordRules": {
+      "minLength": "Минимум 8 символов",
+      "hasUpper": "Заглавная буква",
+      "hasSpecial": "Цифра или спецсимвол"
+    },
+    "passwordStrength": {
+      "weak": "слабый",
+      "medium": "средний",
+      "strong": "надёжный"
+    },
     "noToken": "Сервер не вернул токен авторизации",
     "registerRedirect": "Регистрация успешна! Войдите в систему."
   },

@@ -8,9 +8,7 @@
         $ cd ~/forum
       </NuxtLink>
 
-      <div v-if="loading" class="flex items-center justify-center py-24">
-        <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
+      <PageLoader v-if="loading" icon="message" :text="$t('forum.post.loading') || '$ loading_post...'" />
 
       <template v-else-if="post">
         <article :class="['bg-slate-900 rounded-2xl p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 relative overflow-hidden', isCoursePost ? 'border border-emerald-500/40 shadow-[0_0_18px_rgba(16,185,129,0.08)]' : 'border border-slate-700/30']">

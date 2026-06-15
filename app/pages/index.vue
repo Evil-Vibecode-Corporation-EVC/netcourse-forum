@@ -135,12 +135,7 @@
           </div>
         </div>
 
-        <div v-if="loading" class="flex items-center justify-center py-24">
-          <div class="text-center">
-            <div class="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-            <div class="text-emerald-500 font-mono text-sm">$ loading_posts...</div>
-          </div>
-        </div>
+        <PageLoader v-if="loading" icon="message" text="$ loading_posts..." />
 
         <div v-else-if="error" class="text-center py-16">
           <div class="text-red-400 font-mono mb-4">✗ {{ error }}</div>

@@ -20,7 +20,20 @@
           <div class="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 h-px bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent"></div>
 
           <div v-if="loading" class="flex items-center justify-center py-4">
-            <div class="w-5 h-5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+            <div class="text-center">
+              <div class="relative w-10 h-10 mx-auto mb-2">
+                <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping"></div>
+                <div class="absolute inset-1.5 rounded-full border-2 border-emerald-500/40 animate-ping" style="animation-delay: 0.3s"></div>
+                <div class="absolute inset-0 rounded-full border-2 border-t-emerald-400 border-emerald-500/10 animate-spin"></div>
+                <div class="absolute inset-2.5 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                  <svg class="w-2.5 h-2.5 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                    <circle cx="12" cy="7" r="4"/>
+                  </svg>
+                </div>
+              </div>
+              <p class="text-emerald-400/70 font-mono text-xs animate-pulse">{{ $t('profile.loading') }}</p>
+            </div>
           </div>
 
           <div v-else-if="fetchError" class="text-slate-500 font-mono text-xs text-center py-2">

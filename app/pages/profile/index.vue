@@ -3,21 +3,7 @@
     <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent pointer-events-none"></div>
     <div class="absolute inset-0 bg-[linear-gradient(to_right,#10b98108_1px,transparent_1px),linear-gradient(to_bottom,#10b98108_1px,transparent_1px)] bg-[size:40px_40px] pointer-events-none"></div>
 
-    <div v-if="loading" class="flex items-center justify-center min-h-[70vh]">
-      <div class="text-center">
-        <div class="relative w-16 h-16 mx-auto mb-6">
-          <div class="absolute inset-0 rounded-full border-2 border-emerald-500/20 animate-ping"></div>
-          <div class="absolute inset-2 rounded-full border-2 border-emerald-500/40 animate-ping" style="animation-delay: 0.3s"></div>
-          <div class="absolute inset-0 rounded-full border-2 border-t-emerald-400 border-emerald-500/10 animate-spin"></div>
-          <div class="absolute inset-4 rounded-full bg-emerald-500/10 flex items-center justify-center">
-            <svg class="w-4 h-4 text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
-            </svg>
-          </div>
-        </div>
-        <p class="text-emerald-400/70 font-mono text-sm animate-pulse">{{ $t('profile.loading') }}</p>
-      </div>
-    </div>
+    <PageLoader v-if="loading" icon="user" :text="$t('profile.loading')" />
 
     <div v-else-if="userData" class="max-w-6xl mx-auto relative z-10">
       <div class="relative bg-slate-900/70 backdrop-blur-sm border border-emerald-500/20 rounded-2xl overflow-hidden mb-8">

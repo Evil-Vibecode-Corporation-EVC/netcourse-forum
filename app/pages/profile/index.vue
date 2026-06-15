@@ -69,12 +69,12 @@
           <span class="ml-auto text-emerald-400 text-xs bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">{{ badges.length }}</span>
         </div>
         <div class="p-5 flex flex-wrap gap-3">
-          <div v-for="item in badges" :key="item.id" class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-800/50 border border-slate-700/50">
-            <div class="w-8 h-8 rounded-full bg-slate-700/60 flex items-center justify-center">
-              <img v-if="item.badge?.imageUrl" :src="item.badge.imageUrl" class="w-5 h-5 object-contain" />
-              <span v-else class="text-emerald-400 text-sm">🏅</span>
+          <div v-for="item in badges" :key="item.id" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-800/50 border border-slate-700/50 hover:border-emerald-500/20 transition-all">
+            <div class="w-10 h-10 rounded-full bg-slate-700/60 border border-slate-600/50 flex items-center justify-center shrink-0">
+              <img v-if="item.badge?.imageUrl" :src="item.badge.imageUrl" class="w-7 h-7 object-contain" />
+              <Icon v-else name="mdi:medal" class="w-5 h-5 text-emerald-400" />
             </div>
-            <span class="font-mono text-sm font-medium text-slate-300">{{ item.badge?.name }}</span>
+            <span class="font-mono text-sm font-medium text-slate-200">{{ item.badge?.name }}</span>
           </div>
         </div>
       </div>

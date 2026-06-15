@@ -61,16 +61,26 @@
               @click="toggleProfileMenu"
               class="flex items-center gap-2 p-1 rounded-lg hover:bg-slate-800/50 transition-colors"
             >
-              <div class="w-8 h-8 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center overflow-hidden">
-                <img 
-                  v-if="currentUser?.avatarUrl"
-                  :src="currentUser.avatarUrl" 
-                  :alt="$t('header.avatar')"
-                  class="w-full h-full object-cover"
-                />
-                <span v-else class="text-sm text-emerald-500 font-mono font-bold">
-                  {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
-                </span>
+              <div class="relative shrink-0">
+                <div class="w-8 h-8 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center overflow-hidden">
+                  <img 
+                    v-if="currentUser?.avatarUrl && !avatarError"
+                    :src="currentUser.avatarUrl" 
+                    :alt="$t('header.avatar')"
+                    class="w-full h-full object-cover"
+                    @error="avatarError = true"
+                  />
+                  <span v-if="!currentUser?.avatarUrl || avatarError" class="text-sm text-emerald-500 font-mono font-bold">
+                    {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+                  </span>
+                </div>
+                <div
+                  v-if="equippedBadge"
+                  class="absolute -bottom-0.5 -right-0.5 w-[18px] h-[18px] rounded-full bg-slate-950 border-2 border-emerald-500/30 flex items-center justify-center z-10 shadow-sm"
+                >
+                  <img v-if="equippedBadge.imageUrl" :src="equippedBadge.imageUrl" :alt="equippedBadge.name" class="w-3 h-3 object-contain" />
+                  <span v-else class="text-emerald-400 text-[7px]">★</span>
+                </div>
               </div>
               <span class="text-slate-300 text-sm font-mono hidden lg:block max-w-[120px] truncate">
                 {{ currentUser?.username }}
@@ -199,16 +209,26 @@
           </div>
           <div v-if="isAuthenticated" class="flex flex-col gap-3 pt-4 border-t border-emerald-500/20">
             <div class="flex items-center justify-center gap-3 py-2">
-              <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center overflow-hidden">
-                <img 
-                  v-if="currentUser?.avatarUrl"
-                  :src="currentUser.avatarUrl" 
-                  :alt="$t('header.avatar')"
-                  class="w-full h-full object-cover"
-                />
-                <span v-else class="text-lg text-emerald-500 font-mono font-bold">
-                  {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
-                </span>
+              <div class="relative shrink-0">
+                <div class="w-10 h-10 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center overflow-hidden">
+                  <img 
+                    v-if="currentUser?.avatarUrl && !avatarError"
+                    :src="currentUser.avatarUrl" 
+                    :alt="$t('header.avatar')"
+                    class="w-full h-full object-cover"
+                    @error="avatarError = true"
+                  />
+                  <span v-if="!currentUser?.avatarUrl || avatarError" class="text-lg text-emerald-500 font-mono font-bold">
+                    {{ currentUser?.username?.charAt(0).toUpperCase() || 'U' }}
+                  </span>
+                </div>
+                <div
+                  v-if="equippedBadge"
+                  class="absolute -bottom-0.5 -right-0.5 w-[20px] h-[20px] rounded-full bg-slate-950 border-2 border-emerald-500/30 flex items-center justify-center z-10 shadow-sm"
+                >
+                  <img v-if="equippedBadge.imageUrl" :src="equippedBadge.imageUrl" :alt="equippedBadge.name" class="w-3.5 h-3.5 object-contain" />
+                  <span v-else class="text-emerald-400 text-[8px]">★</span>
+                </div>
               </div>
               <span class="text-slate-300 font-mono text-sm sm:text-base max-w-[150px] truncate">
                 {{ currentUser?.username }}
@@ -261,7 +281,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, navigateTo } from '#app'
 import { useAuth } from '~/composables/useAuth'
 
@@ -271,6 +291,35 @@ const isMobileMenuOpen = ref(false)
 const isProfileMenuOpen = ref(false)
 
 const currentUser = computed(() => user.value)
+
+const avatarError = ref(false)
+const equippedBadge = ref(null)
+
+const loadEquippedBadge = () => {
+  if (!process.client) return
+  try {
+    const raw = localStorage.getItem('equippedBadge')
+    equippedBadge.value = raw ? JSON.parse(raw) : null
+  } catch { equippedBadge.value = null }
+}
+
+onMounted(() => {
+  loadEquippedBadge()
+  if (process.client) {
+    window.addEventListener('badge-equipped', loadEquippedBadge)
+  }
+})
+
+onUnmounted(() => {
+  if (process.client) {
+    window.removeEventListener('badge-equipped', loadEquippedBadge)
+  }
+})
+
+watch(isAuthenticated, () => {
+  avatarError.value = false
+  loadEquippedBadge()
+})
 
 const route = useRoute()
 
